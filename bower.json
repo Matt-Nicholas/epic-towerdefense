@@ -1,0 +1,20 @@
+{
+  "name": "epic-towerdefense",
+  "description": "phaser-tower-defense ====================",
+  "main": "index.js",
+  "authors": [
+    "Matt Nicholas <fostermatt82@gmial.com>"
+  ],
+  "license": "ISC",
+"homepage": "https://github.com/Matt-Nicholas/epic-js-towerdefense",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies":{
+    "bootstrap": "^3.3.7"
+  }
+}
