@@ -1,11 +1,13 @@
-var Enemy = function(x, y, anim, animLength) {
+var Enemy = function(x, y, anim) {
   this.enemy = game.add.sprite(path[0].x * tileSquare, path[0].y * tileSquare, anim);
 
-  this.enemy.animations.add('walk');
-  this.enemy.animations.play('walk', animLength, true);
+  this.enemy.animations.add('walk-right',[6,7,8], 10, true);
+  this.enemy.animations.add('walk-left',[3,4,5], 10, true);
+  this.enemy.animations.add('walk-down',[0,1,2], 10, true);
+  this.enemy.animations.add('walk-up',[9,10,11], 10, true);
   this.enemy.anchor.setTo(0.5, 0.5)
   this.enemy.health = 10;
-  this.enemy.speed = 10;
+  this.enemy.speed = 1;
   this.enemy.speedX = 0;
   this.enemy.speedY = 0;
   this.enemy.curTile = 0;
@@ -47,16 +49,20 @@ Enemy.prototype.nextTile = function(enemy) {
       // on check le sens gauche/droite
       if (enemy.next_positX > enemy.x) {
           enemy.speedX = enemy.speed;
+          enemy.animations.play('walk-right');
        } else if (enemy.next_positX < enemy.x) {
           enemy.speedX = -enemy.speed;
+          enemy.animations.play('walk-left');
        } else {
           enemy.speedX = 0;
       }
       // on check le sens haut/bas
       if (enemy.next_positY > enemy.y) {
           enemy.speedY = enemy.speed;
+          enemy.animations.play('walk-down');
        } else if (enemy.next_positY < enemy.y) {
           enemy.speedY = -enemy.speed;
+          enemy.animations.play('walk-up');
        } else {
           enemy.speedY = 0;
       }
@@ -70,5 +76,8 @@ Enemy.prototype.takeHit = function(enemy) {
   enemy.health -= 1;
   if(enemy.health <= 0) {
     enemy.destroy();
+    var explosion = explosions.getFirstExists(false);
+    explosion.reset(enemy.x, enemy.y);
+    explosion.play('kaboom', 40, false, true);
   }
 }
