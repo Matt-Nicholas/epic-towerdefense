@@ -33,6 +33,9 @@
         var button;
         var button2;
 
+        var cash = 100;
+
+        var bmpText;
         var towerSelected = "bitchin";
         var tileForbiden = ["9", "10"];
 
@@ -40,6 +43,9 @@
 
 
         function preload() {
+
+           game.load.bitmapFont('desyrel', 'assets/fonts/bitmapFonts/gem.png', 'assets/fonts/bitmapFonts/gem.xml');
+
             game.load.tilemap('level1', 'assets/maps/tower-defense.json', null, Phaser.Tilemap.TILED_JSON);
             game.load.image('tiles', 'assets/maps/map_tiles.png');
 
@@ -78,6 +84,8 @@
             /*
              * Towers Bullets
              */
+
+             bmpText = game.add.bitmapText(800, 500, 'desyrel', 'Cash:', 32);
 
              button = game.add.button(810, 10, 'button', bitchinTowerClick);
             button2 = game.add.button(810, 81, 'button2', mehTowerClick);
@@ -133,6 +141,10 @@
           });
 
           game.physics.arcade.overlap(bullets, enemys, collisionHandler, null, this);
+
+          //Cash
+
+           bmpText.setText("Cash:" + cash);
         }
         function listener(pointer) {
 
@@ -140,8 +152,20 @@
               /*
                * Add tower
                */
-              Tower.prototype.add(pointer);
-              canAddTower = false;
+
+              console.log("Add tower");
+
+                  if( towerSelected == "meh" && cash > 49){
+                    cash -= 50;
+                    Tower.prototype.add(pointer);
+                    canAddTower = false;
+                  }
+                  else if( towerSelected == "bitchin" && cash > 74){
+                    cash -= 75;
+                    Tower.prototype.add(pointer);
+                    canAddTower = false;
+                  }
+
           }
         }
 
