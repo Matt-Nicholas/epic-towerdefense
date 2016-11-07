@@ -12,6 +12,7 @@
                 margin : 0;
             }
         </style>
+        <script type="text/javascript" src="js/Tower.class.js"></script>
     </head>
     <body>
       <h1>Schmower Defense</h1>
@@ -21,11 +22,17 @@
         var tileSquare = 32;
         var map, layer;
 
-
+        var towers;
+        var canAddTower = true;
+        var towerSelected = "bitchin";
+        var tileForbiden = ["9", "10"];
 
         function preload() {
             game.load.tilemap('level1', 'assets/maps/tower-defense.json', null, Phaser.Tilemap.TILED_JSON);
             game.load.image('tiles', 'assets/maps/map_tiles.png');
+
+            game.load.image('meh', 'assets/sprites/tower-32.png');
+            game.load.image('bitchin', 'assets/sprites/tower1-32.png');
 
             /*
              * Enemy Preload
@@ -47,7 +54,8 @@
             /*
              * Tower
              */
-
+             towers = game.add.group();
+            game.physics.enable(towers, Phaser.Physics.ARCADE);
 
             /*
              * Towers Bullets
@@ -57,19 +65,28 @@
             /*
              * Enemy
              */
+
+            game.input.onDown.add(listener, this);
         }
+
         function render() {
 
         }
         function update() {
 
         }
-        function listener() {
+        function listener(pointer) {
 
+          if (canAddTower) {
+              /*
+               * Add tower
+               */
+              console.log("Add tower");
+              Tower.prototype.add(pointer);
+              canAddTower = false;
+          }
         }
-        function collisionHandler() {
 
-        }
 
 
 
