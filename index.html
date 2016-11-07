@@ -7,6 +7,7 @@
         <title>Tower Defense</title>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/phaser/2.0.6/phaser.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script type="text/javascript" src="js/Enemy.class.js"></script>
         <style>
             *{
                 margin : 0;
@@ -17,11 +18,12 @@
       <h1>Schmower Defense</h1>
     </body>
     <script type="text/javascript">
-        var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'gameContainer', {preload: preload, create: create, update: update, render: render});
+        var game = new Phaser.Game(800, 632, Phaser.CANVAS, 'gameContainer', {preload: preload, create: create, update: update, render: render});
         var tileSquare = 32;
         var map, layer;
+        var path = [{x: 0, y: 3},{x: 1, y: 3},{x: 2, y: 3},{x:3, y:3},{x:4, y:3},{x:5, y:3},{x:6, y:3},{x:7, y:3},{x:8, y:3},{x:9, y:3},{x:10, y:3},{x:10, y:4},{x:10, y:5},{x:10, y:6},{x:11, y:6},{x:12, y:6},{x:13, y:6},{x:14, y:6},{x:15, y:6},{x:15, y:5},{x:15, y:4},{x:15, y:3},{x:16, y:3},{x:17, y:3},{x:18, y:3},{x:19, y:3},{x:20, y:3},{x:21, y:3},{x:22, y:3},{x:23, y:3},{x:23, y:4},{x:23, y:5},{x:23, y:6},{x:23, y:7},{x:23, y:8},{x:23, y:9},{x:23, y:10},{x:23, y:11},{x:22, y:11},{x:21, y:11},{x:20, y:11},{x:19, y:11},{x:18, y:11},{x:17, y:11},{x:16, y:11},{x:15, y:11},{x:14, y:11},{x:14, y:12},{x:13, y:12},{x:12, y:12},{x:11, y:12},{x:10, y:12},{x:9, y:12},{x:8, y:12},{x:8, y:11},{x:8, y:10},{x:8, y:9},{x:8, y:8},{x:7, y:8},{x:6, y:8},{x:5, y:8},{x:4, y:8},{x:3, y:8},{x:3, y:9},{x:3, y:10},{x:3, y:11},{x:3, y:12},{x:3, y:13},{x:3, y:14},{x:3, y:15},{x:4, y:15},{x:5, y:15},{x:6, y:15},{x:7, y:15},{x:8, y:15},{x:9, y:15},{x:10, y:15},{x:11, y:15},{x:12, y:15},{x:12, y:16},{x:12, y:17},{x:12, y:18},{x:12, y:19},{x:12, y:20}];
 
-
+        var enemysAnimation = [{'name': 'chain', 'length': 1}];
 
         function preload() {
             game.load.tilemap('level1', 'assets/maps/tower-defense.json', null, Phaser.Tilemap.TILED_JSON);
@@ -30,6 +32,7 @@
             /*
              * Enemy Preload
              */
+             game.load.spritesheet('chain', 'assets/images/chain1.png', 32, 32, 1);
 
         }
 
@@ -57,11 +60,22 @@
             /*
              * Enemy
              */
+             enemys = game.add.group();
+             enemys.enableBody = true;
+             enemys.physicsBodyType = Phaser.Physics.ARCADE;
+
+             generateEnemy();
         }
         function render() {
 
         }
         function update() {
+          /*
+          * Generate Enemy
+          */
+          enemys.forEach(function(enemy) {
+            Enemy.prototype.moveElmt(enemy);
+          });
 
         }
         function listener() {
@@ -69,6 +83,19 @@
         }
         function collisionHandler() {
 
+        }
+
+        function generateEnemy() {
+          var i = 0;
+          var enemysBcl = setInterval(function() {
+            if(i < 5) {
+              var animEnemy = enemysAnimation[parseInt(Math.random() * enemysAnimation.length)];
+              new Enemy(path[0].x * tileSquare, path[0].y * tileSquare, animEnemy.name, animEnemy.length);
+            } else {
+              clearTimeout(enemysBcl);
+            }
+            i++;
+          }, 1000);
         }
 
 
