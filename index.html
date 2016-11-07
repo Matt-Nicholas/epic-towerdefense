@@ -19,7 +19,7 @@
       <h1>Schmower Defense</h1>
     </body>
     <script type="text/javascript">
-        var game = new Phaser.Game(800, 640, Phaser.AUTO, 'gameContainer', {preload: preload, create: create, update: update, render: render});
+        var game = new Phaser.Game(1000, 640, Phaser.AUTO, 'gameContainer', {preload: preload, create: create, update: update, render: render});
         var tileSquare = 32;
         var playerHealth = 20;
         var map, layer;
@@ -32,11 +32,12 @@
 
         var button;
         var button2;
+        var explosion;
 
         var towerSelected = "bitchin";
         var tileForbiden = ["9", "10"];
 
-        var enemysAnimation = [{'name': 'chain', 'length': 1}];
+        var enemysAnimation = [{'name': 'blackCat','length': 12},{'name': 'rat','length': 12},{'name': 'brownDog','length': 12}];
 
 
         function preload() {
@@ -49,10 +50,14 @@
             /*
              * Enemy Preload
              */
-             game.load.spritesheet('chain', 'assets/images/chain1.png', 32, 32, 1);
+             game.load.spritesheet('blackCat', 'assets/sprites/blackCat.png', 32, 32);
+             game.load.spritesheet('rat', 'assets/sprites/rat.png', 32, 32);
+             game.load.spritesheet('brownDog', 'assets/sprites/brownDog.png', 32, 32);
 
              game.load.spritesheet('button2', 'assets/sprites/tower-48.png', 48, 48);
              game.load.spritesheet('button', 'assets/sprites/tower1.png', 48, 71, 1);
+
+             game.load.spritesheet('kaboom','assets/sprites/explode.png',32,32,17)
 
         }
 
@@ -101,7 +106,12 @@
 
              generateEnemy();
 
+             explosions = game.add.group();
+             explosions.createMultiple(30, 'kaboom');
+             explosions.forEach(setupInvader, this);
+
              game.input.onDown.add(listener, this);
+
         }
 
         function bitchinTowerClick() {
@@ -150,12 +160,20 @@
             Enemy.prototype.takeHit(enemy);
         }
 
+        function setupInvader (invader) {
+
+          invader.anchor.x = 0.5;
+          invader.anchor.y = 0.5;
+          invader.animations.add('kaboom');
+
+        }
+
         function generateEnemy() {
           var i = 0;
           var enemysBcl = setInterval(function() {
             if(i < 5) {
               var animEnemy = enemysAnimation[parseInt(Math.random() * enemysAnimation.length)];
-              new Enemy(path[0].x * tileSquare, path[0].y * tileSquare, animEnemy.name, animEnemy.length);
+              new Enemy(path[0].x * tileSquare, path[0].y * tileSquare, animEnemy.name);
             } else {
               clearTimeout(enemysBcl);
             }
