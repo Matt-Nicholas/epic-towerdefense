@@ -13,6 +13,7 @@
                 margin : 0;
             }
         </style>
+        <script type="text/javascript" src="js/Tower.class.js"></script>
     </head>
     <body>
       <h1>Schmower Defense</h1>
@@ -23,11 +24,21 @@
         var map, layer;
         var path = [{x: 0, y: 3},{x: 1, y: 3},{x: 2, y: 3},{x:3, y:3},{x:4, y:3},{x:5, y:3},{x:6, y:3},{x:7, y:3},{x:8, y:3},{x:9, y:3},{x:10, y:3},{x:10, y:4},{x:10, y:5},{x:10, y:6},{x:11, y:6},{x:12, y:6},{x:13, y:6},{x:14, y:6},{x:15, y:6},{x:15, y:5},{x:15, y:4},{x:15, y:3},{x:16, y:3},{x:17, y:3},{x:18, y:3},{x:19, y:3},{x:20, y:3},{x:21, y:3},{x:22, y:3},{x:23, y:3},{x:23, y:4},{x:23, y:5},{x:23, y:6},{x:23, y:7},{x:23, y:8},{x:23, y:9},{x:23, y:10},{x:23, y:11},{x:22, y:11},{x:21, y:11},{x:20, y:11},{x:19, y:11},{x:18, y:11},{x:17, y:11},{x:16, y:11},{x:15, y:11},{x:14, y:11},{x:14, y:12},{x:13, y:12},{x:12, y:12},{x:11, y:12},{x:10, y:12},{x:9, y:12},{x:8, y:12},{x:8, y:11},{x:8, y:10},{x:8, y:9},{x:8, y:8},{x:7, y:8},{x:6, y:8},{x:5, y:8},{x:4, y:8},{x:3, y:8},{x:3, y:9},{x:3, y:10},{x:3, y:11},{x:3, y:12},{x:3, y:13},{x:3, y:14},{x:3, y:15},{x:4, y:15},{x:5, y:15},{x:6, y:15},{x:7, y:15},{x:8, y:15},{x:9, y:15},{x:10, y:15},{x:11, y:15},{x:12, y:15},{x:12, y:16},{x:12, y:17},{x:12, y:18},{x:12, y:19},{x:12, y:20}];
 
+
+        var towers;
+        var canAddTower = true;
+        var towerSelected = "bitchin";
+        var tileForbiden = ["9", "10"];
+
         var enemysAnimation = [{'name': 'chain', 'length': 1}];
+
 
         function preload() {
             game.load.tilemap('level1', 'assets/maps/tower-defense.json', null, Phaser.Tilemap.TILED_JSON);
             game.load.image('tiles', 'assets/maps/map_tiles.png');
+
+            game.load.image('meh', 'assets/sprites/tower-32.png');
+            game.load.image('bitchin', 'assets/sprites/tower1-32.png');
 
             /*
              * Enemy Preload
@@ -50,7 +61,8 @@
             /*
              * Tower
              */
-
+             towers = game.add.group();
+            game.physics.enable(towers, Phaser.Physics.ARCADE);
 
             /*
              * Towers Bullets
@@ -60,12 +72,17 @@
             /*
              * Enemy
              */
+
+            game.input.onDown.add(listener, this);
+
              enemys = game.add.group();
              enemys.enableBody = true;
              enemys.physicsBodyType = Phaser.Physics.ARCADE;
 
              generateEnemy();
+
         }
+
         function render() {
 
         }
@@ -78,12 +95,18 @@
           });
 
         }
-        function listener() {
+        function listener(pointer) {
 
+          if (canAddTower) {
+              /*
+               * Add tower
+               */
+              console.log("Add tower");
+              Tower.prototype.add(pointer);
+              canAddTower = false;
+          }
         }
-        function collisionHandler() {
 
-        }
 
         function generateEnemy() {
           var i = 0;

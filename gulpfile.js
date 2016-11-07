@@ -4,7 +4,6 @@ var gulp = require('gulp');
 // used for build and clean tasks.
 var utilities = require('gulp-util');
 var buildProduction = utilities.env.production;
-// var del = require('del');
 
 // set up server with watchers and run typescript compiler in the shell.
 var browserSync = require('browser-sync').create();
