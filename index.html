@@ -27,16 +27,29 @@
         var path = [{x: 0, y: 3},{x: 1, y: 3},{x: 2, y: 3},{x:3, y:3},{x:4, y:3},{x:5, y:3},{x:6, y:3},{x:7, y:3},{x:8, y:3},{x:9, y:3},{x:10, y:3},{x:10, y:4},{x:10, y:5},{x:10, y:6},{x:11, y:6},{x:12, y:6},{x:13, y:6},{x:14, y:6},{x:15, y:6},{x:15, y:5},{x:15, y:4},{x:15, y:3},{x:16, y:3},{x:17, y:3},{x:18, y:3},{x:19, y:3},{x:20, y:3},{x:21, y:3},{x:22, y:3},{x:23, y:3},{x:23, y:4},{x:23, y:5},{x:23, y:6},{x:23, y:7},{x:23, y:8},{x:23, y:9},{x:23, y:10},{x:23, y:11},{x:22, y:11},{x:21, y:11},{x:20, y:11},{x:19, y:11},{x:18, y:11},{x:17, y:11},{x:16, y:11},{x:15, y:11},{x:14, y:11},{x:14, y:12},{x:13, y:12},{x:12, y:12},{x:11, y:12},{x:10, y:12},{x:9, y:12},{x:8, y:12},{x:8, y:11},{x:8, y:10},{x:8, y:9},{x:8, y:8},{x:7, y:8},{x:6, y:8},{x:5, y:8},{x:4, y:8},{x:3, y:8},{x:3, y:9},{x:3, y:10},{x:3, y:11},{x:3, y:12},{x:3, y:13},{x:3, y:14},{x:3, y:15},{x:4, y:15},{x:5, y:15},{x:6, y:15},{x:7, y:15},{x:8, y:15},{x:9, y:15},{x:10, y:15},{x:11, y:15},{x:12, y:15},{x:12, y:16},{x:12, y:17},{x:12, y:18},{x:12, y:19},{x:12, y:20}];
 
 
-        var towers;
+        var towers = [];
         var canAddTower = true;
 
         var button;
         var button2;
         var explosion;
 
-        var cash = 100;
+        var attackStat = 0;
+        var speedStat = 0;
+        var levelStat = 0;
+
+        var cash = 50000;
 
         var bmpText;
+        var towerStatsText;
+        var attackText;
+        var speedText;
+        var levelText;
+
+        var towerCash;
+
+        var clickedTower;
+
         var towerSelected = "bitchin";
         var tileForbiden = ["9", "10"];
 
@@ -62,6 +75,8 @@
 
              game.load.spritesheet('button2', 'assets/sprites/tower-48.png', 48, 48);
              game.load.spritesheet('button', 'assets/sprites/tower1.png', 48, 71, 1);
+
+             game.load.spritesheet('plusSign', 'assets/sprites/plusSign.png', 32, 32);
 
              game.load.spritesheet('kaboom','assets/sprites/explode.png',32,32,17)
 
@@ -90,10 +105,19 @@
              * Towers Bullets
              */
 
-             bmpText = game.add.bitmapText(800, 500, 'desyrel', 'Cash:', 32);
+             bmpText = game.add.bitmapText(800, 500, 'desyrel', 'Cash:', 24);
+
+             towerStatsText = game.add.bitmapText(800, 300, 'desyrel', 'Tower:', 24);
+
+             attackText = game.add.bitmapText(800, 350, 'desyrel', 'Attack:', 24);
+             speedText = game.add.bitmapText(800, 400, 'desyrel', 'Speed:', 24);
+
+             levelText = game.add.bitmapText(800, 250, 'desyrel', 'Level:', 24);
 
              button = game.add.button(810, 10, 'button', bitchinTowerClick);
-            button2 = game.add.button(810, 81, 'button2', mehTowerClick);
+             button2 = game.add.button(810, 81, 'button2', mehTowerClick);
+
+             increment = game.add.button(900, 250, 'plusSign', upgradeTower);
 
             bullets = game.add.group();
             bullets.enableBody = true;
@@ -125,11 +149,38 @@
         function bitchinTowerClick() {
         canAddTower = true;
         towerSelected = "bitchin";
+        attackStat = 5;
+        speedStat = 10;
         }
         function mehTowerClick() {
           canAddTower = true;
           towerSelected = "meh";
+          attackStat = 5;
+          speedStat = 5;
         }
+
+        function upgradeTower() {
+          if(towerSelected == 'meh'){
+            towerCash = 100;
+          }
+          else if(towerSelected == 'bitchin'){
+            towerCash = 150;
+          }
+            if(cash > towerCash && clickedTower.level == 1){
+              cash -= towerCash;
+              clickedTower.level += 1;
+              clickedTower.fireTime -= 200;
+              levelStat = clickedTower.level;
+            }
+            else if(cash > (towerCash*2) && clickedTower.level == 2){
+
+              cash -= (towerCash*2);
+              clickedTower.level += 1;
+              clickedTower.fireTime -= 200;
+
+              levelStat = clickedTower.level;
+            }
+          }
 
         function render() {
 
@@ -155,29 +206,63 @@
           //Cash
 
            bmpText.setText("Cash:" + cash);
+
+           towerStatsText.setText("Tower:" +  towerSelected);
+
+           attackText.setText("Attack:" + attackStat);
+
+           speedText.setText("Speed:" + speedStat);
+
+           levelText.setText("Level:" + levelStat);
+
+           // select
+
+            towers.forEach(function(tower) {
+                 tower.inputEnabled = true;
+
+                if(tower.input.pointerDown()){
+                  tower.aplha = 0.5;
+                  if (tower.type === "meh") {
+                    speedStat = 5;
+                    towerSelected = "meh";
+                    levelStat = tower.level;
+                    clickedTower = tower;
+                  } else if (tower.type == "bitchin"){
+                    speedStat = 10;
+                    towerSelected = "bitchin";
+                    levelStat = tower.level;
+                    clickedTower = tower;
+                  }
+                }
+
+              });
+
         }
         function listener(pointer) {
+
 
           if (canAddTower) {
               /*
                * Add tower
                */
 
-              console.log("Add tower");
+            console.log("Add tower");
 
-                  if( towerSelected == "meh" && cash > 49){
-                    cash -= 50;
-                    Tower.prototype.add(pointer);
-                    canAddTower = false;
-                  }
-                  else if( towerSelected == "bitchin" && cash > 74){
-                    cash -= 75;
-                    Tower.prototype.add(pointer);
-                    canAddTower = false;
-                  }
+                if( towerSelected == "meh" && cash > 49){
+                  cash -= 50;
+                  Tower.prototype.add(pointer);
+                  canAddTower = false;
+                }
+                else if( towerSelected == "bitchin" && cash > 74){
+                  cash -= 75;
+                  Tower.prototype.add(pointer);
+                  canAddTower = false;
+                }
 
           }
+
         }
+
 
         function collisionHandler(bullet, enemy) {
             bullet.kill();

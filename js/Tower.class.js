@@ -1,3 +1,6 @@
+var type;
+var level;
+
 var Tower = function(worldX, worldY, tileX, tileY, tile) {
     var index = String(eval(tileX + "" + tileY));
 
@@ -15,11 +18,15 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
       if(towerSelected === 'bitchin') {
         this.tower.fireTime = 500;
         this.tower.radius = 100;
+        this.tower.level = 1;
+        this.tower.type = "bitchin";
         towers.add(this.tower);
       } else {
         this.tower = game.add.sprite(worldX, worldY, tile);
         this.tower.fireTime = 1000;
         this.tower.radius = 200;
+        this.tower.level = 1;
+        this.tower.type = "meh";
         towers.add(this.tower);
       }
       this.tower.fireLastTime = game.time.now + this.tower.fireTime;
@@ -30,6 +37,7 @@ Tower.prototype.add = function(pointer) {
   if(canAddTower) {
     Tower.prototype.posit(pointer)
   }
+
 }
 
 Tower.prototype.posit = function(pointer) {
