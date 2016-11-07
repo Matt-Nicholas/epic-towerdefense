@@ -75,6 +75,7 @@ Enemy.prototype.nextTile = function(enemy) {
 Enemy.prototype.takeHit = function(enemy) {
   enemy.health -= 1;
   if(enemy.health <= 0) {
+    cash += 20;
     enemy.destroy();
     var explosion = explosions.getFirstExists(false);
     explosion.reset(enemy.x, enemy.y);

@@ -1,6 +1,9 @@
 var Tower = function(worldX, worldY, tileX, tileY, tile) {
-    var index = String(eval(tileX + "" + tileY));
+    var index = (tileX + "-" + tileY);
 
+    console.log(tileX + " t " + tileY);
+    console.log(worldX + " w " + worldY);
+    console.log(index);
 
     if ($.inArray(index, tileForbiden) == -1) {
       this.tower = game.add.sprite(worldX, worldY, tile);
@@ -9,17 +12,18 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
       this.tower.tileX = tileX;
       this.tower.tileY = tileY;
       this.tower.tile = tile;
-
       tileForbiden.push(index);
 
       if(towerSelected === 'bitchin') {
         this.tower.fireTime = 500;
         this.tower.radius = 100;
         towers.add(this.tower);
+        cash -= 50;
       } else {
         this.tower = game.add.sprite(worldX, worldY, tile);
         this.tower.fireTime = 1000;
         this.tower.radius = 200;
+        cash -= 25;
         towers.add(this.tower);
       }
       this.tower.fireLastTime = game.time.now + this.tower.fireTime;
