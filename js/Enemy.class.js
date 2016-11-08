@@ -74,8 +74,8 @@ Enemy.prototype.nextTile = function(enemy) {
     }
 
 }
-Enemy.prototype.takeHit = function(enemy) {
-  enemy.health -= 1;
+Enemy.prototype.takeHit = function(enemy, bullet) {
+  enemy.health -= bullet.health;
   if(enemy.health <= 0) {
     cash += 20;
     enemy.destroy();
