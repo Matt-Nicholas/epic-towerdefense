@@ -23,6 +23,16 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         this.tower.ammunition = "canon";
         this.tower.bulletDamage = 1;
         towers.add(this.tower);
+      }
+      else if(towerSelected === 'ice') {
+        this.tower.fireTime = 1000;
+        this.tower.radius = 100;
+        this.tower.level = 1;
+        this.tower.type = "ice";
+        cash -= 150;
+        this.tower.ammunition = "frost";
+        this.tower.bulletDamage = 1;
+        towers.add(this.tower);
       } else {
         this.tower = game.add.sprite(worldX, worldY, tile);
         this.tower.fireTime = 1000;
