@@ -4,10 +4,6 @@ var level;
 var Tower = function(worldX, worldY, tileX, tileY, tile) {
     var index = (tileX + "-" + tileY);
 
-    console.log(tileX + " t " + tileY);
-    console.log(worldX + " w " + worldY);
-    console.log(index);
-
     if ($.inArray(index, tileForbiden) == -1) {
       this.tower = game.add.sprite(worldX, worldY, tile);
       this.tower.worldX = worldX;
@@ -54,12 +50,10 @@ Tower.prototype.posit = function(pointer) {
 
 Tower.prototype.fire = function(tower, enemy) {
   if((game.math.distance(tower.x, tower.y, enemy.x, enemy.y)) < tower.radius) {
-    bullets.createMultiple(1, 'bullet', 0, false);
     if (game.time.now > tower.fireLastTime) {
         var bullet = bullets.getFirstExists(false);
         if (bullet && typeof enemys.children[0] != "undefined") {
             bullet.reset(tower.x, tower.y);
-            bullet.body.collideWorldBounds = true;
             bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, enemys.children[0].x, enemys.children[0].y)) * 180 / Math.PI;
             game.physics.arcade.moveToObject(bullet, enemys.children[0], 500);
         }
