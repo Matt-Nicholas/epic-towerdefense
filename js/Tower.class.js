@@ -47,6 +47,19 @@ Tower.prototype.add = function(pointer) {
 
 }
 
+Tower.prototype.levelTwo = function(tower) {
+  console.log(tower);
+   tower.animations.add('levelTwo',[1], false);
+   tower.animations.play('levelTwo');
+}
+
+Tower.prototype.levelThree = function(tower) {
+  console.log(tower);
+   tower.animations.add('levelThree',[2], false);
+   tower.animations.play('levelThree');
+}
+
+
 Tower.prototype.posit = function(pointer) {
     var tileworldX = pointer.worldX - (pointer.worldX % tileSquare);
     var tileworldY = pointer.worldY - (pointer.worldY % tileSquare);
