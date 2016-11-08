@@ -33,6 +33,8 @@
 
         var button;
         var button2;
+        var button3;
+
         var explosion;
 
         var attackStat = 0;
@@ -70,7 +72,12 @@
 
             game.load.spritesheet('meh', 'assets/sprites/testTower.png',32,32,3);
             game.load.image('bitchin', 'assets/sprites/tower1-32.png');
+
             game.load.spritesheet('plasma', 'assets/sprites/plasmas.png', 16, 16, 12);
+
+            game.load.spritesheet('ice', 'assets/sprites/iceTower.png',32,32,1);
+
+
             game.load.image('canon', 'assets/sprites/tower1-32.png');
 
             /*
@@ -80,6 +87,7 @@
              game.load.spritesheet('rat', 'assets/sprites/rat.png', 32, 32);
              game.load.spritesheet('brownDog', 'assets/sprites/brownDog.png', 32, 32);
 
+             game.load.spritesheet('button3', 'assets/sprites/iceTower.png', 32,32,1);
              game.load.spritesheet('button2', 'assets/sprites/tower-48.png', 48, 48);
              game.load.spritesheet('button', 'assets/sprites/tower1.png', 48, 71, 1);
 
@@ -124,6 +132,7 @@
 
              button = game.add.button(810, 10, 'button', bitchinTowerClick);
              button2 = game.add.button(810, 81, 'button2', mehTowerClick);
+             button3 = game.add.button(810, 140, 'button3', iceTowerClick);
 
              startWave = game.add.button(800, 575, 'plusSign', startWave);
              increment = game.add.button(900, 250, 'plusSign', upgradeTower);
@@ -180,6 +189,12 @@
           attackStat = 5;
           speedStat = 5;
         }
+        function iceTowerClick() {
+          canAddTower = true;
+          towerSelected = "ice";
+          attackStat = 5;
+          speedStat = 5;
+        }
 
         function upgradeTower() {
           if(towerSelected == 'meh'){
@@ -187,6 +202,9 @@
           }
           else if(towerSelected == 'bitchin'){
             towerCash = 150;
+          }
+          else if(towerSelected == 'ice'){
+            towerCash = 200;
           }
             if(cash > towerCash && clickedTower.level == 1){
               cash -= towerCash;
@@ -196,7 +214,6 @@
               Tower.prototype.levelTwo(clickedTower);
             }
             else if(cash > (towerCash*2) && clickedTower.level == 2){
-
               cash -= (towerCash*2);
               clickedTower.level += 1;
               clickedTower.fireTime -= 200;
@@ -258,6 +275,11 @@
                     towerSelected = "bitchin";
                     levelStat = tower.level;
                     clickedTower = tower;
+                  } else if (tower.type == "ice"){
+                    speedStat = 10;
+                    towerSelected = "ice";
+                    levelStat = tower.level;
+                    clickedTower = tower;
                   }
                 }
 
@@ -278,9 +300,10 @@
                   else if( towerSelected == "bitchin" && cash >= 50){
                     Tower.prototype.add(pointer);
                   }
-
+                  else if( towerSelected == "ice" && cash >= 50){
+                    Tower.prototype.add(pointer);
+                  }
           }
-
         }
 
 

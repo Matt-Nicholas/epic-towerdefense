@@ -16,6 +16,8 @@ var Enemy = function(x, y, anim, wave) {
   this.enemy.speedY = 0;
   this.enemy.curTile = 0;
   this.enemy.firsthit = 0;
+  this.enemy.slowTimer = 0;
+  this.enemy.recover = 0;
   enemys.add(this.enemy);
   enemys.setAll('checkWorldBounds', true);
   enemys.setAll('outOfBoundsKill', true);
@@ -43,6 +45,16 @@ Enemy.prototype.moveElmt = function(enemy) {
     else if (enemy.speedY < 0 && enemy.y <= enemy.next_positY) {
         enemy.y = enemy.next_positY;
         Enemy.prototype.nextTile(enemy);
+    }
+
+    if(enemy.recover < 201){
+      enemy.recover += 1;
+    }
+
+    if(enemy.recover > 200 && enemy.slowTimer === 1){
+      enemy.recover = 0;
+      enemy.slowTimer = 0;
+      enemy.speed = enemy.speed*2;
     }
 
 }
@@ -83,6 +95,18 @@ Enemy.prototype.takeHit = function(enemy, bullet) {
   if(enemy.firsthit === 0){
     enemy.hpBar = enemy.addChild(game.make.sprite(-15,-30,'healthBar'));
   }
+
+  console.log(bullet.key);
+
+  if(bullet.key === "canon"){
+    if(enemy.slowTimer === 0){
+      enemy.recover = 0;
+      enemy.speed = enemy.speed/2;
+    }
+    enemy.slowTimer = 1;
+
+  }
+
   enemy.firsthit = 1;
   enemy.hpBar.width = enemy.health;
 
