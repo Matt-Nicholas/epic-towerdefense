@@ -12,6 +12,7 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
       this.tower.tileY = tileY;
       this.tower.tile = tile;
       tileForbiden.push(index);
+      this.tower.killZone = [];
 
       if(towerSelected === 'bitchin') {
         this.tower.fireTime = 500;
@@ -63,14 +64,26 @@ Tower.prototype.posit = function(pointer) {
 
 Tower.prototype.fire = function(tower, enemy) {
   if((game.math.distance(tower.x, tower.y, enemy.x, enemy.y)) < tower.radius) {
+    if(!(tower.killZone.includes(enemy))) {
+      tower.killZone.unshift(enemy);
+      console.log(tower.killZone)
+    }
     if (game.time.now > tower.fireLastTime) {
         var bullet = bullets.getFirstExists(false);
-        if (bullet && typeof enemys.children[0] != "undefined") {
+        if (bullet && typeof tower.killZone[(tower.killZone.length - 1)] != "undefined") {
             bullet.reset(tower.x, tower.y);
-            bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, enemys.children[0].x, enemys.children[0].y)) * 180 / Math.PI;
-            game.physics.arcade.moveToObject(bullet, enemys.children[0], 500);
+            bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, tower.killZone[(tower.killZone.length - 1)].x, tower.killZone[(tower.killZone.length - 1)].y)) * 180 / Math.PI;
+            game.physics.arcade.moveToObject(bullet, tower.killZone[(tower.killZone.length - 1)], 500);
         }
         tower.fireLastTime = game.time.now + tower.fireTime;
     }
+  } else if (((game.math.distance(tower.x, tower.y, enemy.x, enemy.y)) > tower.radius) && tower.killZone.includes(enemy)) {
+    tower.killZone.pop();
   }
+}
+
+Tower.prototype.popEnemy = function(enemy) {
+  towers.forEach(function(tower) {
+    tower.killZone.splice((tower.killZone.indexOf(enemy)), 1)
+  })
 }
