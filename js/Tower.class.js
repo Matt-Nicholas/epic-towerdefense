@@ -92,10 +92,8 @@ Tower.prototype.fire = function(tower, enemy) {
         bullet = plasmas.getFirstExists(false);
         bullet.lifespan = tower.radius * 2;
         console.log(bullet)
-
-
-
       }
+      
         if (bullet && typeof tower.killZone[(tower.killZone.length - 1)] != "undefined") {
             bullet.reset(tower.x+17, tower.y+5, tower.bulletDamage);
             bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, tower.killZone[(tower.killZone.length - 1)].x, tower.killZone[(tower.killZone.length - 1)].y)) * 180 / Math.PI;

@@ -102,7 +102,7 @@ Enemy.prototype.takeHit = function(enemy, bullet) {
     if(enemy.slowTimer === 0){
       enemy.recover = 0;
       enemy.speed = enemy.speed/2;
-    }
+      }
     enemy.slowTimer = 1;
 
   }
