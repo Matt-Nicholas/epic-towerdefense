@@ -3,8 +3,6 @@
 var Enemy = function(x, y, anim, wave) {
   this.enemy = game.add.sprite(path[0].x * tileSquare, path[0].y * tileSquare, anim);
 
-  this.enemy.hpBar = this.enemy.addChild(game.make.sprite(-15,-30,'healthBar'));
-
   this.enemy.animations.add('walk-right',[6,7,8], 10, true);
   this.enemy.animations.add('walk-left',[3,4,5], 10, true);
   this.enemy.animations.add('walk-down',[0,1,2], 10, true);
@@ -17,6 +15,7 @@ var Enemy = function(x, y, anim, wave) {
   this.enemy.speedX = 0;
   this.enemy.speedY = 0;
   this.enemy.curTile = 0;
+  this.enemy.firsthit = 0;
   enemys.add(this.enemy);
   enemys.setAll('checkWorldBounds', true);
   enemys.setAll('outOfBoundsKill', true);
@@ -80,7 +79,12 @@ Enemy.prototype.nextTile = function(enemy) {
 
 }
 Enemy.prototype.takeHit = function(enemy) {
+
+  if(enemy.firsthit === 0){
+    enemy.hpBar = enemy.addChild(game.make.sprite(-15,-30,'healthBar'));
+  }
   enemy.health -= 1;
+  enemy.firsthit = 1;
 
   enemy.hpBar.width = enemy.health;
 
