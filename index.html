@@ -56,7 +56,7 @@
 
         var barConfig = {x: 200, y: 100};
 
-        var towerSelected = "bitchin";
+        var towerSelected;
 
         var enemysAnimation = [{'name': 'blackCat','length': 12},{'name': 'rat','length': 12},{'name': 'brownDog','length': 12}];
 
@@ -70,15 +70,16 @@
 
             game.load.image('healthBar', 'assets/images/healthBar.png');
 
-            game.load.spritesheet('meh', 'assets/sprites/testTower.png',32,32,3);
-            game.load.image('bitchin', 'assets/sprites/tower1-32.png');
+            game.load.spritesheet('plasmaTower', 'assets/sprites/testTower.png',32,32,3);
+            game.load.image('canonTower', 'assets/sprites/tower1-32.png');
 
             game.load.spritesheet('plasma', 'assets/sprites/plasmas.png', 16, 16, 12);
 
-            game.load.spritesheet('ice', 'assets/sprites/iceTower.png',32,32,1);
+            game.load.spritesheet('frostTower', 'assets/sprites/iceTower.png',32,32,1);
 
 
             game.load.image('canon', 'assets/sprites/tower1-32.png');
+            game.load.image('frost', 'assets/images/frost.png',32,32);
 
             /*
              * Enemy Preload
@@ -144,6 +145,10 @@
              canons = game.add.group();
              canons.enableBody = true;
              canons.physicsBodyType = Phaser.Physics.ARCADE;
+
+             frosts = game.add.group();
+             frosts.enableBody = true;
+             frosts.physicsBodyType = Phaser.Physics.ARCADE;
             /*
             *Creates Bullet Pools for Tower Types
             */
@@ -158,6 +163,12 @@
             canons.setAll('anchor.y', 1);
             canons.setAll('outOfBoundsKill', true);
             canons.setAll('checkWorldBounds', true);
+
+            frosts.createMultiple(1000, 'frost');
+            frosts.setAll('anchor.x', 0.5);
+            frosts.setAll('anchor.y', 0.6);
+            frosts.setAll('outOfBoundsKill', true);
+            frosts.setAll('checkWorldBounds', true);
 
             /*
              * Enemy
@@ -179,19 +190,19 @@
 
         function bitchinTowerClick() {
         canAddTower = true;
-        towerSelected = "bitchin";
+        towerSelected = "canonTower";
         attackStat = 1;
         speedStat = 20;
         }
         function mehTowerClick() {
           canAddTower = true;
-          towerSelected = "meh";
+          towerSelected = "plasmaTower";
           attackStat = 2;
           speedStat = 10;
         }
         function iceTowerClick() {
           canAddTower = true;
-          towerSelected = "ice";
+          towerSelected = "frostTower";
           attackStat = 1;
           speedStat = 10;
         }
@@ -221,6 +232,7 @@
 
           game.physics.arcade.overlap(canons, enemys, collisionHandler, null, this);
           game.physics.arcade.overlap(plasmas, enemys, collisionHandler, null, this);
+          game.physics.arcade.overlap(frosts, enemys, collisionHandler, null, this);
 
           //Cash
 
@@ -278,16 +290,15 @@
               /*
                * Add tower
                */
-
-                  if( towerSelected == "meh" && cash >= 25){
-                    Tower.prototype.add(pointer);
-                  }
-                  else if( towerSelected == "bitchin" && cash >= 50){
-                    Tower.prototype.add(pointer);
-                  }
-                  else if( towerSelected == "ice" && cash >= 50){
-                    Tower.prototype.add(pointer);
-                  }
+            if( towerSelected == "plasmaTower" && cash >= 25){
+              Tower.prototype.add(pointer);
+            }
+            else if( towerSelected == "canonTower" && cash >= 50){
+              Tower.prototype.add(pointer);
+            }
+            else if( towerSelected == "frostTower" && cash >= 50){
+              Tower.prototype.add(pointer);
+            }
           }
         }
 
@@ -295,14 +306,13 @@
         function collisionHandler(bullet, enemy) {
             Enemy.prototype.takeHit(enemy, bullet);
             bullet.kill();
-            console.log("hit")
         }
 
-        function setupInvader (invader) {
+        function setupEnemy (enemy) {
 
-          invader.anchor.x = 0.5;
-          invader.anchor.y = 0.5;
-          invader.animations.add('kaboom');
+          enemy.anchor.x = 0.5;
+          enemy.anchor.y = 0.5;
+          enemy.animations.add('kaboom');
 
         }
 
