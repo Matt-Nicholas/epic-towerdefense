@@ -52,6 +52,8 @@
 
         var clickedTower;
 
+        var barConfig = {x: 200, y: 100};
+
         var towerSelected = "bitchin";
 
         var enemysAnimation = [{'name': 'blackCat','length': 12},{'name': 'rat','length': 12},{'name': 'brownDog','length': 12}];
@@ -63,6 +65,8 @@
 
             game.load.tilemap('level1', 'assets/maps/tower-defense.json', null, Phaser.Tilemap.TILED_JSON);
             game.load.image('tiles', 'assets/maps/map_tiles.png');
+
+            game.load.image('healthBar', 'assets/images/healthBar.png');
 
             game.load.spritesheet('meh', 'assets/sprites/testTower.png',32,32,3);
             game.load.image('bitchin', 'assets/sprites/tower1-32.png');
@@ -145,6 +149,7 @@
              explosions.forEach(setupInvader, this);
 
              game.input.onDown.add(listener, this);
+
 
         }
 

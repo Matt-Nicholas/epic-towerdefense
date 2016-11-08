@@ -1,5 +1,10 @@
+
+
 var Enemy = function(x, y, anim, wave) {
   this.enemy = game.add.sprite(path[0].x * tileSquare, path[0].y * tileSquare, anim);
+
+  this.enemy.hpBar = this.enemy.addChild(game.make.sprite(-15,-30,'healthBar'));
+
   this.enemy.animations.add('walk-right',[6,7,8], 10, true);
   this.enemy.animations.add('walk-left',[3,4,5], 10, true);
   this.enemy.animations.add('walk-down',[0,1,2], 10, true);
@@ -76,6 +81,9 @@ Enemy.prototype.nextTile = function(enemy) {
 }
 Enemy.prototype.takeHit = function(enemy) {
   enemy.health -= 1;
+
+  enemy.hpBar.width = enemy.health;
+
   if(enemy.health <= 0) {
     cash += 20;
     enemy.destroy();
