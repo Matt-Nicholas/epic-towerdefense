@@ -27,6 +27,7 @@
         var path = [{x: 0, y: 3},{x: 1, y: 3},{x: 2, y: 3},{x:3, y:3},{x:4, y:3},{x:5, y:3},{x:6, y:3},{x:7, y:3},{x:8, y:3},{x:9, y:3},{x:10, y:3},{x:10, y:4},{x:10, y:5},{x:10, y:6},{x:11, y:6},{x:12, y:6},{x:13, y:6},{x:14, y:6},{x:15, y:6},{x:15, y:5},{x:15, y:4},{x:15, y:3},{x:16, y:3},{x:17, y:3},{x:18, y:3},{x:19, y:3},{x:20, y:3},{x:21, y:3},{x:22, y:3},{x:23, y:3},{x:23, y:4},{x:23, y:5},{x:23, y:6},{x:23, y:7},{x:23, y:8},{x:23, y:9},{x:23, y:10},{x:23, y:11},{x:22, y:11},{x:21, y:11},{x:20, y:11},{x:19, y:11},{x:18, y:11},{x:17, y:11},{x:16, y:11},{x:15, y:11},{x:14, y:11},{x:14, y:12},{x:13, y:12},{x:12, y:12},{x:11, y:12},{x:10, y:12},{x:9, y:12},{x:8, y:12},{x:8, y:11},{x:8, y:10},{x:8, y:9},{x:8, y:8},{x:7, y:8},{x:6, y:8},{x:5, y:8},{x:4, y:8},{x:3, y:8},{x:3, y:9},{x:3, y:10},{x:3, y:11},{x:3, y:12},{x:3, y:13},{x:3, y:14},{x:3, y:15},{x:4, y:15},{x:5, y:15},{x:6, y:15},{x:7, y:15},{x:8, y:15},{x:9, y:15},{x:10, y:15},{x:11, y:15},{x:12, y:15},{x:12, y:16},{x:12, y:17},{x:12, y:18},{x:12, y:19},{x:12, y:20}];
 
         var waveActive = false;
+        var nextWaveActive = false;
         var currentWave = 0;
         var towers = [];
         var canAddTower = true;
@@ -131,11 +132,11 @@
 
              levelText = game.add.bitmapText(800, 250, 'desyrel', 'Level:', 24);
 
-             button = game.add.button(810, 10, 'button', bitchinTowerClick);
-             button2 = game.add.button(810, 81, 'button2', mehTowerClick);
-             button3 = game.add.button(810, 140, 'button3', iceTowerClick);
+             button = game.add.button(810, 10, 'button', canonTowerClick);
+             button2 = game.add.button(810, 81, 'button2', plasmaTowerClick);
+             button3 = game.add.button(810, 140, 'button3', frostTowerClick);
 
-             startWave = game.add.button(800, 575, 'plusSign', startWave);
+             startWave = game.add.button(800, 575, 'plusSign', nextWave);
              increment = game.add.button(900, 250, 'plusSign', upgradeTower);
 
              plasmas = game.add.group();
@@ -181,26 +182,26 @@
 
              explosions = game.add.group();
              explosions.createMultiple(30, 'kaboom');
-             explosions.forEach(setupInvader, this);
+             explosions.forEach(setupEnemy, this);
 
              game.input.onDown.add(listener, this);
 
 
         }
 
-        function bitchinTowerClick() {
+        function canonTowerClick() {
         canAddTower = true;
         towerSelected = "canonTower";
         attackStat = 1;
         speedStat = 20;
         }
-        function mehTowerClick() {
+        function plasmaTowerClick() {
           canAddTower = true;
           towerSelected = "plasmaTower";
           attackStat = 2;
           speedStat = 10;
         }
-        function iceTowerClick() {
+        function frostTowerClick() {
           canAddTower = true;
           towerSelected = "frostTower";
           attackStat = 1;
@@ -261,7 +262,6 @@
                   levelStat = tower.level;
                   attackStat = tower.bulletDamage;
                   speedStat = Math.floor( (1 / tower.fireTime) * 10000);
-
                   // if (tower.type === "meh") {
                   //   speedStat = Math.floor( (1 / tower.fireTime) * 10000);
                   //   towerSelected = "meh";
@@ -281,7 +281,15 @@
                 }
 
               });
-
+              if((enemys.length <= 0) && (nextWaveActive === false)) {
+                console.log('ran')
+                nextWaveActive = true;
+                nextWave()
+              }
+              if((enemys.length > 1) && nextWaveActive === true) {
+                nextWaveActive = false;
+                waveActive = true;
+              }
         }
         function listener(pointer) {
 
@@ -316,17 +324,20 @@
 
         }
 
-        function startWave() {
+        function nextWave() {
           currentWave += 1;
-          generateEnemy(currentWave);
+          setTimeout(function() {
+            generateEnemy(currentWave);
+          },15000)
         }
         function generateEnemy(wave) {
           var i = 0;
           var enemysBcl = setInterval(function() {
-            if(i < (2)) {
+            if(i < (wave * 2)) {
               var animEnemy = enemysAnimation[parseInt(Math.random() * enemysAnimation.length)];
               new Enemy(path[0].x * tileSquare, path[0].y * tileSquare, animEnemy.name, wave);
             } else {
+              nextWaveActive = false;
               clearTimeout(enemysBcl);
             }
             i++;
@@ -341,8 +352,5 @@
 
           playerHealth -= 1;
         }
-
-
-
     </script>
 </html>
