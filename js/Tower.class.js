@@ -69,6 +69,39 @@ Tower.prototype.levelThree = function(tower) {
    tower.animations.play('levelThree');
 }
 
+Tower.prototype.upgradeTower = function(clickedTower) {
+  if(towerSelected == 'meh'){
+    towerCash = 100;
+  }
+  else if(towerSelected == 'bitchin'){
+    towerCash = 150;
+  }
+  else if(towerSelected == 'ice'){
+    towerCash = 200;
+  }
+    if(cash > towerCash && clickedTower.level == 1){
+      cash -= towerCash;
+      clickedTower.level += 1;
+      clickedTower.fireTime = clickedTower.fireTime * 0.75;
+      clickedTower.bulletDamage += 0.5;
+      speedStat = Math.floor( (1 / clickedTower.fireTime) * 10000);
+      attackStat = clickedTower.bulletDamage;
+      levelStat = clickedTower.level;
+      Tower.prototype.levelTwo(clickedTower);
+    }
+    else if(cash > (towerCash*2) && clickedTower.level == 2){
+      cash -= (towerCash*2);
+      clickedTower.level += 1;
+      clickedTower.bulletDamage += 0.5;
+      clickedTower.fireTime = clickedTower.fireTime * 0.75;
+
+      attackStat = clickedTower.bulletDamage;
+      speedStat = Math.floor((1 / clickedTower.fireTime) * 10000);
+      levelStat = clickedTower.level;
+      Tower.prototype.levelThree(clickedTower);
+    }
+  }
+
 
 Tower.prototype.posit = function(pointer) {
     var tileworldX = pointer.worldX - (pointer.worldX % tileSquare);

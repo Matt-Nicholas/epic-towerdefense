@@ -178,47 +178,25 @@
         function bitchinTowerClick() {
         canAddTower = true;
         towerSelected = "bitchin";
-        attackStat = 5;
-        speedStat = 10;
+        attackStat = 1;
+        speedStat = 20;
         }
         function mehTowerClick() {
           canAddTower = true;
           towerSelected = "meh";
-          attackStat = 5;
-          speedStat = 5;
+          attackStat = 2;
+          speedStat = 10;
         }
         function iceTowerClick() {
           canAddTower = true;
           towerSelected = "ice";
-          attackStat = 5;
-          speedStat = 5;
+          attackStat = 1;
+          speedStat = 10;
         }
 
-        function upgradeTower() {
-          if(towerSelected == 'meh'){
-            towerCash = 100;
-          }
-          else if(towerSelected == 'bitchin'){
-            towerCash = 150;
-          }
-          else if(towerSelected == 'ice'){
-            towerCash = 200;
-          }
-            if(cash > towerCash && clickedTower.level == 1){
-              cash -= towerCash;
-              clickedTower.level += 1;
-              clickedTower.fireTime -= 200;
-              levelStat = clickedTower.level;
-              Tower.prototype.levelTwo(clickedTower);
-            }
-            else if(cash > (towerCash*2) && clickedTower.level == 2){
-              cash -= (towerCash*2);
-              clickedTower.level += 1;
-              clickedTower.fireTime -= 200;
-              levelStat = clickedTower.level;
-              Tower.prototype.levelThree(clickedTower);
-            }
-          }
+         function upgradeTower() {
+           Tower.prototype.upgradeTower(clickedTower);
+        }
 
         function render() {
 
@@ -263,22 +241,29 @@
 
                 if(tower.input.pointerDown()){
                   tower.aplha = 0.5;
-                  if (tower.type === "meh") {
-                    speedStat = 5;
-                    towerSelected = "meh";
-                    levelStat = tower.level;
-                    clickedTower = tower;
-                  } else if (tower.type == "bitchin"){
-                    speedStat = 10;
-                    towerSelected = "bitchin";
-                    levelStat = tower.level;
-                    clickedTower = tower;
-                  } else if (tower.type == "ice"){
-                    speedStat = 10;
-                    towerSelected = "ice";
-                    levelStat = tower.level;
-                    clickedTower = tower;
-                  }
+
+                  clickedTower = tower;
+                  towerSelected = tower.type;
+                  levelStat = tower.level;
+                  attackStat = tower.bulletDamage;
+                  speedStat = Math.floor( (1 / tower.fireTime) * 10000);
+
+                  // if (tower.type === "meh") {
+                  //   speedStat = Math.floor( (1 / tower.fireTime) * 10000);
+                  //   towerSelected = "meh";
+                  //   levelStat = tower.level;
+                  //   clickedTower = tower;
+                  // } else if (tower.type == "bitchin"){
+                  //   speedStat = Math.floor( (1 / tower.fireTime) * 10000);
+                  //   towerSelected = "bitchin";
+                  //   levelStat = tower.level;
+                  //   clickedTower = tower;
+                  // } else if (tower.type == "ice"){
+                  //   speedStat = Math.floor( (1 / tower.fireTime) * 10000);
+                  //   towerSelected = "ice";
+                  //   levelStat = tower.level;
+                  //   clickedTower = tower;
+                  // }
                 }
 
               });
