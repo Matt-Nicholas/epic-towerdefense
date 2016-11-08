@@ -70,7 +70,9 @@
 
             game.load.spritesheet('meh', 'assets/sprites/testTower.png',32,32,3);
             game.load.image('bitchin', 'assets/sprites/tower1-32.png');
-            game.load.image('bullet', 'assets/sprites/bullet.png');
+            game.load.image('plasma', 'assets/sprites/bullet.png');
+            game.load.image('canon', 'assets/sprites/tower1-32.png');
+
             /*
              * Enemy Preload
              */
@@ -126,14 +128,28 @@
              startWave = game.add.button(800, 575, 'plusSign', startWave);
              increment = game.add.button(900, 250, 'plusSign', upgradeTower);
 
-            bullets = game.add.group();
-            bullets.enableBody = true;
-            bullets.physicsBodyType = Phaser.Physics.ARCADE;
-            bullets.createMultiple(30, 'bullet');
-            bullets.setAll('anchor.x', 0.5);
-            bullets.setAll('anchor.y', 1);
-            bullets.setAll('outOfBoundsKill', true);
-            bullets.setAll('checkWorldBounds', true);
+             plasmas = game.add.group();
+             plasmas.enableBody = true;
+             plasmas.physicsBodyType = Phaser.Physics.ARCADE;
+
+             canons = game.add.group();
+             canons.enableBody = true;
+             canons.physicsBodyType = Phaser.Physics.ARCADE;
+            /*
+            *Creates Bullet Pools for Tower Types
+            */
+            plasmas.createMultiple(30, 'plasma');
+            plasmas.setAll('anchor.x', 0.5);
+            plasmas.setAll('anchor.y', 1);
+            plasmas.setAll('lifespan', 1000);
+            plasmas.setAll('outOfBoundsKill', true);
+            plasmas.setAll('checkWorldBounds', true);
+
+            canons.createMultiple(30, 'canon');
+            canons.setAll('anchor.x', 0.5);
+            canons.setAll('anchor.y', 1);
+            canons.setAll('outOfBoundsKill', true);
+            canons.setAll('checkWorldBounds', true);
 
             /*
              * Enemy
@@ -167,6 +183,7 @@
         }
 
         function upgradeTower() {
+          console.log(bullets.length)
           if(towerSelected == 'meh'){
             towerCash = 100;
           }
@@ -209,7 +226,8 @@
             })
           });
 
-          game.physics.arcade.overlap(bullets, enemys, collisionHandler, null, this);
+          game.physics.arcade.overlap(canons, enemys, collisionHandler, null, this);
+          game.physics.arcade.overlap(plasmas, enemys, collisionHandler, null, this);
 
           //Cash
 
@@ -269,8 +287,8 @@
 
 
         function collisionHandler(bullet, enemy) {
+            Enemy.prototype.takeHit(enemy, bullet);
             bullet.kill();
-            Enemy.prototype.takeHit(enemy);
         }
 
         function setupInvader (invader) {

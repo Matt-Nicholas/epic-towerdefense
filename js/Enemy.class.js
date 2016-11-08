@@ -78,14 +78,12 @@ Enemy.prototype.nextTile = function(enemy) {
     }
 
 }
-Enemy.prototype.takeHit = function(enemy) {
-
+Enemy.prototype.takeHit = function(enemy, bullet) {
+  enemy.health -= bullet.health;
   if(enemy.firsthit === 0){
     enemy.hpBar = enemy.addChild(game.make.sprite(-15,-30,'healthBar'));
   }
-  enemy.health -= 1;
   enemy.firsthit = 1;
-
   enemy.hpBar.width = enemy.health;
 
   if(enemy.health <= 0) {

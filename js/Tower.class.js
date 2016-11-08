@@ -12,15 +12,17 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
       this.tower.tileY = tileY;
       this.tower.tile = tile;
       tileForbiden.push(index);
-      this.tower.killZone = [];
+
 
       if(towerSelected === 'bitchin') {
         this.tower.fireTime = 500;
         this.tower.radius = 100;
         this.tower.level = 1;
         this.tower.type = "bitchin";
-        towers.add(this.tower);
         cash -= 50;
+        this.tower.ammunition = "canon";
+        this.tower.bulletDamage = 1;
+        towers.add(this.tower);
       } else {
         this.tower = game.add.sprite(worldX, worldY, tile);
         this.tower.fireTime = 1000;
@@ -28,8 +30,12 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         cash -= 25;
         this.tower.level = 1;
         this.tower.type = "meh";
+        this.tower.ammunition = "plasma";
+        this.tower.bulletDamage = 2;
         towers.add(this.tower);
+
       }
+      this.tower.killZone = [];
       this.tower.fireLastTime = game.time.now + this.tower.fireTime;
     }
 }
@@ -66,12 +72,16 @@ Tower.prototype.fire = function(tower, enemy) {
   if((game.math.distance(tower.x, tower.y, enemy.x, enemy.y)) < tower.radius) {
     if(!(tower.killZone.includes(enemy))) {
       tower.killZone.unshift(enemy);
-      console.log(tower.killZone)
     }
     if (game.time.now > tower.fireLastTime) {
-        var bullet = bullets.getFirstExists(false);
+      var bullet;
+      if(tower.type === "bitchin") {
+       bullet = canons.getFirstExists(false);
+      } else {
+       bullet = plasmas.getFirstExists(false);
+      }
         if (bullet && typeof tower.killZone[(tower.killZone.length - 1)] != "undefined") {
-            bullet.reset(tower.x, tower.y);
+            bullet.reset(tower.x, tower.y, tower.bulletDamage);
             bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, tower.killZone[(tower.killZone.length - 1)].x, tower.killZone[(tower.killZone.length - 1)].y)) * 180 / Math.PI;
             game.physics.arcade.moveToObject(bullet, tower.killZone[(tower.killZone.length - 1)], 500);
         }
