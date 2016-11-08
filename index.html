@@ -327,6 +327,7 @@
           enemy.kill();
           enemy.destroy();
           this.enemys.remove(enemy)
+          Tower.prototype.popEnemy(enemy);
 
           playerHealth -= 1;
         }
