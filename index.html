@@ -64,7 +64,7 @@
             game.load.tilemap('level1', 'assets/maps/tower-defense.json', null, Phaser.Tilemap.TILED_JSON);
             game.load.image('tiles', 'assets/maps/map_tiles.png');
 
-            game.load.image('meh', 'assets/sprites/tower-32.png');
+            game.load.spritesheet('meh', 'assets/sprites/testTower.png',32,32,3);
             game.load.image('bitchin', 'assets/sprites/tower1-32.png');
             game.load.image('bullet', 'assets/sprites/bullet.png');
             /*
@@ -173,14 +173,15 @@
               clickedTower.level += 1;
               clickedTower.fireTime -= 200;
               levelStat = clickedTower.level;
+              Tower.prototype.levelTwo(clickedTower);
             }
             else if(cash > (towerCash*2) && clickedTower.level == 2){
 
               cash -= (towerCash*2);
               clickedTower.level += 1;
               clickedTower.fireTime -= 200;
-
               levelStat = clickedTower.level;
+              Tower.prototype.levelThree(clickedTower);
             }
           }
 
