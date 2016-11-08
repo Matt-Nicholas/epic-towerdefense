@@ -25,13 +25,13 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         towers.add(this.tower);
       } else {
         this.tower = game.add.sprite(worldX, worldY, tile);
-        this.tower.fireTime = 1000;
+        this.tower.fireTime = 10;
         this.tower.radius = 200;
         cash -= 25;
         this.tower.level = 1;
         this.tower.type = "meh";
         this.tower.ammunition = "plasma";
-        this.tower.bulletDamage = 2;
+        this.tower.bulletDamage = .02;
         towers.add(this.tower);
 
       }
@@ -77,11 +77,17 @@ Tower.prototype.fire = function(tower, enemy) {
       var bullet;
       if(tower.type === "bitchin") {
        bullet = canons.getFirstExists(false);
+       bullet.lifespan = tower.radius * 2;
       } else {
-       bullet = plasmas.getFirstExists(false);
+        bullet = plasmas.getFirstExists(false);
+        bullet.lifespan = tower.radius * 2;
+        console.log(bullet)
+
+
+
       }
         if (bullet && typeof tower.killZone[(tower.killZone.length - 1)] != "undefined") {
-            bullet.reset(tower.x, tower.y, tower.bulletDamage);
+            bullet.reset(tower.x+17, tower.y+5, tower.bulletDamage);
             bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, tower.killZone[(tower.killZone.length - 1)].x, tower.killZone[(tower.killZone.length - 1)].y)) * 180 / Math.PI;
             game.physics.arcade.moveToObject(bullet, tower.killZone[(tower.killZone.length - 1)], 500);
         }

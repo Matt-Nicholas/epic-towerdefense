@@ -70,7 +70,7 @@
 
             game.load.spritesheet('meh', 'assets/sprites/testTower.png',32,32,3);
             game.load.image('bitchin', 'assets/sprites/tower1-32.png');
-            game.load.image('plasma', 'assets/sprites/bullet.png');
+            game.load.spritesheet('plasma', 'assets/sprites/plasmas.png', 16, 16, 12);
             game.load.image('canon', 'assets/sprites/tower1-32.png');
 
             /*
@@ -138,10 +138,9 @@
             /*
             *Creates Bullet Pools for Tower Types
             */
-            plasmas.createMultiple(30, 'plasma');
+            plasmas.createMultiple(1000, 'plasma');
             plasmas.setAll('anchor.x', 0.5);
-            plasmas.setAll('anchor.y', 1);
-            plasmas.setAll('lifespan', 1000);
+            plasmas.setAll('anchor.y', 0.6);
             plasmas.setAll('outOfBoundsKill', true);
             plasmas.setAll('checkWorldBounds', true);
 
@@ -183,7 +182,6 @@
         }
 
         function upgradeTower() {
-          console.log(bullets.length)
           if(towerSelected == 'meh'){
             towerCash = 100;
           }
@@ -289,6 +287,7 @@
         function collisionHandler(bullet, enemy) {
             Enemy.prototype.takeHit(enemy, bullet);
             bullet.kill();
+            console.log("hit")
         }
 
         function setupInvader (invader) {
