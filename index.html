@@ -282,7 +282,7 @@
         function generateEnemy(wave) {
           var i = 0;
           var enemysBcl = setInterval(function() {
-            if(i < (5 + (wave * 3))) {
+            if(i < (2)) {
               var animEnemy = enemysAnimation[parseInt(Math.random() * enemysAnimation.length)];
               new Enemy(path[0].x * tileSquare, path[0].y * tileSquare, animEnemy.name, wave);
             } else {

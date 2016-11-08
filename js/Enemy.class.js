@@ -17,7 +17,6 @@ var Enemy = function(x, y, anim, wave) {
   enemys.setAll('outOfBoundsKill', true);
   Enemy.prototype.nextTile(this.enemy);
   Enemy.prototype.moveElmt(this.enemy);
-  console.log(anim + " " + this.enemy.health);
 
 }
 Enemy.prototype.moveElmt = function(enemy) {
@@ -80,6 +79,7 @@ Enemy.prototype.takeHit = function(enemy) {
   if(enemy.health <= 0) {
     cash += 20;
     enemy.destroy();
+    Tower.prototype.popEnemy(enemy);
     var explosion = explosions.getFirstExists(false);
     explosion.reset(enemy.x, enemy.y);
     explosion.play('kaboom', 40, false, true);
