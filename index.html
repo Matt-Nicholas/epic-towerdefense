@@ -67,7 +67,8 @@
   var clickedTower;
   var barConfig = {x: 200, y: 100};
   var towerSelected;
-  var enemysAnimation = [{'name': 'blackCat','length': 12},{'name': 'rat','length': 12},{'name': 'brownDog','length': 12}];
+  // var enemysAnimation = [{'name': 'blackCat','length': 12},{'name': 'rat','length': 12},{'name': 'brownDog','length': 12}];
+  var enemysAnimation = [{'name': 'chain','length': 60}];
 
 
   function preload() {
@@ -105,6 +106,7 @@
     game.load.spritesheet('blackCat', 'assets/sprites/blackCat.png', 32, 32);
     game.load.spritesheet('rat', 'assets/sprites/rat.png', 32, 32);
     game.load.spritesheet('brownDog', 'assets/sprites/brownDog.png', 32, 32);
+    game.load.spritesheet('chain', 'assets/sprites/chaingang.png', 32, 32, 60);
 
     /*
     * Button Preload
