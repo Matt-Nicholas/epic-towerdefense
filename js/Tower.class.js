@@ -159,18 +159,21 @@ Tower.prototype.fire = function(tower, enemy) {
       if(tower.type === "cannonTower") {
        bullet = cannons.getFirstExists(false);
        bullet.lifespan = tower.radius * 2;
+       cannonShotSound.play();
      } else if(tower.type === "plasmaTower"){
         bullet = plasmas.getFirstExists(false);
         bullet.lifespan = tower.radius * 2;
       } else if(tower.type === "frostTower") {
         bullet = frosts.getFirstExists(false);
         bullet.lifespan = tower.radius * 2;
+        iceWind.play();
       } else if(tower.type === "flameTower") {
         bullet = flames.getFirstExists(false);
         bullet.lifespan = tower.radius * 6;
       } else if(tower.type === "archerTower") {
         bullet = arrows.getFirstExists(false);
         bullet.lifespan = tower.radius * 2;
+        archerShotSound.play();
       }
       if (bullet && typeof tower.killZone[(tower.killZone.length - 1)] != "undefined") {
         if (bullet.key === 'flame') {

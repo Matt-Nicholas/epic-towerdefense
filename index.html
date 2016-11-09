@@ -69,6 +69,14 @@
   var enemysAnimation = [{'name': 'blackCat','length': 12},{'name': 'rat','length': 12},{'name': 'brownDog','length': 12}];
   var towerSelected = "None";
 
+  //Sounds
+  var catDie = new Audio('assets/sounds/catDie.mp3');
+  var iceWind = new Audio('assets/sounds/stormWind.wav');
+  var cannonShotSound = new Audio('assets/sounds/cannonSound.wav');
+  var archerShotSound;
+  iceWind.volume = 0.4;
+
+
   var frostText;
   var fireText;
   var archerText;
@@ -76,7 +84,12 @@
   var plasmaText;
   var currentWaveText;
   var towerName = "";
+
   function preload() {
+
+    //sounds
+
+    game.load.audio('archerShotSound', 'assets/sounds/archerShotSound.mp3');
 
     game.load.bitmapFont('desyrel', 'assets/fonts/bitmapFonts/gem.png', 'assets/fonts/bitmapFonts/gem.xml');
     game.load.image('tiles', 'assets/maps/map_tiles.png');
@@ -130,7 +143,7 @@
   }
 
   function create() {
-
+    archerShotSound = game.add.audio('archerShotSound');
     /**
     * Init map
     */
@@ -190,8 +203,6 @@
     button5 = game.add.button(810, 256, 'button5', plasmaTowerClick);
     readyForWaveButton = game.add.button(680, 600, 'startButton', readyForWave);
     increment = game.add.button(735, 410, 'upgrade', upgradeTower);
-
-
 
     plasmas = game.add.group();
     plasmas.enableBody = true;

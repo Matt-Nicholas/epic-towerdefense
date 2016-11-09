@@ -107,7 +107,7 @@ Enemy.prototype.takeHit = function(enemy, bullet) {
   if(enemy.health <= 0) {
     cash += 20;
     score += 5;
-
+    catDie.play();
 
     enemy.destroy();
     Tower.prototype.popEnemy(enemy);
