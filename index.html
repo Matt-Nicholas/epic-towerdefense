@@ -111,7 +111,7 @@
     /*
     * Button Preload
     */
-    game.load.spritesheet('button3', 'assets/sprites/iceTower.png', 32,32,1);
+    game.load.spritesheet('button3', 'assets/images/iceButton.png', 64,64,1);
     game.load.spritesheet('button5', 'assets/sprites/plasmaTowers.png', 32,32,1);
     game.load.spritesheet('button4', 'assets/images/barad-dur-button.png', 64,64,1);
     game.load.spritesheet('button2', 'assets/sprites/archerTowers.png', 32, 32,4);
@@ -143,9 +143,10 @@
 
     //Tower Range
     graphics = game.add.graphics(0, 0);
-    graphics.beginFill(0xFFFF0B, 0.5);
+    // graphics.beginFill(0xD3D3D3, 0.1);
+    graphics.lineStyle(1, 0x0000FF, 0.2);
     circle = graphics.drawCircle(0,0,100);
-    graphics.endFill();
+    // graphics.endFill();
     /*
     * Info Panel
     */
