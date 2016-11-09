@@ -67,8 +67,7 @@
   var clickedTower;
   var barConfig = {x: 200, y: 100};
   var towerSelected;
-  // var enemysAnimation = [{'name': 'blackCat','length': 12},{'name': 'rat','length': 12},{'name': 'brownDog','length': 12}];
-  var enemysAnimation = [{'name': 'chain','length': 60}];
+  var enemysAnimation = [{'name': 'blackCat','length': 12},{'name': 'rat','length': 12},{'name': 'brownDog','length': 12}];
 
 
   function preload() {
@@ -117,7 +116,7 @@
     game.load.spritesheet('button2', 'assets/sprites/archerTowers.png', 32, 32,4);
     game.load.spritesheet('button', 'assets/sprites/cannonTowerButton.png', 64, 64, 1);
 
-    game.load.spritesheet('plusSign', 'assets/sprites/plusSign.png', 32, 32);
+    game.load.image('upgrade', 'assets/sprites/upgrade.png');
     game.load.spritesheet('startButton', 'assets/sprites/start.png', 128, 128);
 
   }
@@ -144,7 +143,7 @@
     //Tower Range
     graphics = game.add.graphics(0, 0);
     graphics.beginFill(0xFFFF0B, 0.5);
-    circle = graphics.drawCircle(0,0,100);
+    circle = graphics.drawCircle(0,0,1);
     graphics.endFill();
     /*
     * Info Panel
@@ -167,7 +166,7 @@
     button4 = game.add.button(870, 10, 'button4', flameTowerClick);
     button5 = game.add.button(870, 81, 'button5', plasmaTowerClick);
     readyForWaveButton = game.add.button(680, 600, 'startButton', readyForWave);
-    increment = game.add.button(900, 250, 'plusSign', upgradeTower);
+    increment = game.add.button(725, 400, 'upgrade', upgradeTower);
 
 
 
@@ -338,7 +337,7 @@
 
         circle.x = tower.x + 15;
         circle.y = tower.y + 15;
-        circle.scale.setTo((tower.radius * 0.01), (tower.radius * 0.01));
+        circle.scale.setTo((tower.radius), (tower.radius));
         clickedTower = tower;
         towerSelected = tower.type;
         levelStat = tower.level;
@@ -365,7 +364,6 @@
     });
     if((enemys.length <= 0) && (nextWaveActive === false) && (nextWaveTimer <= 0)) {
       waveActive = false
-      console.log('ran')
       nextWaveActive = true;
       nextWave();
       nextWaveTimer = 15;
@@ -460,19 +458,33 @@
     //   generateEnemy(currentWave);
     // }
   }
+  var base = 3;
   function generateEnemy(wave) {
     waveActive = true;
     var i = 0;
-    var enemysBcl = setInterval(function() {
-      if(i < (wave * 2)) {
-        var animEnemy = enemysAnimation[parseInt(Math.random() * enemysAnimation.length)];
-        new Enemy(path[0].x * tileSquare, path[0].y * tileSquare, animEnemy.name, wave);
-      } else {
-        nextWaveActive = false;
-        clearTimeout(enemysBcl);
-      }
-      i++;
-    }, 1000);
+    if((wave % 10) === 0) {
+      base = base * 2;
+      var enemysBcl = setInterval(function() {
+        if(i < (Math.round(base*(1+wave/10)))) {
+          new Enemy(path[0].x * tileSquare, path[0].y * tileSquare, "chain", wave);
+        } else {
+          nextWaveActive = false;
+          clearTimeout(enemysBcl);
+        }
+        i++;
+      }, 1000);
+    } else {
+      var enemysBcl = setInterval(function() {
+        if(i < (Math.round(base*(1+wave/10)))) {
+          var animEnemy = enemysAnimation[parseInt(Math.random() * enemysAnimation.length)];
+          new Enemy(path[0].x * tileSquare, path[0].y * tileSquare, animEnemy.name, wave);
+        } else {
+          nextWaveActive = false;
+          clearTimeout(enemysBcl);
+        }
+        i++;
+      }, 1000);
+    }
   }
 
   function takePlayerHit(enemy) {
@@ -498,7 +510,6 @@
     }
     //topTen = [scoresArray[0], scoresArray[1], scoresArray[2]];
 
-    console.log(topTen);
 
     return topTen;
 
@@ -527,7 +538,6 @@
 
     ref.child('scores').on('value', function(snap){
       scores = snap.val();
-      console.log(scores);
       for (var key in scores) {
         scoresArray.push([scores[key].score, scores[key].name] );
 
