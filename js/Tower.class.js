@@ -55,13 +55,13 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         this.tower.animations.add("levelThree", [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21], 10, true);
         this.tower.animations.play("levelOne")
         this.tower.animations
-        this.tower.fireTime = 10;
+        this.tower.fireTime = 100;
         this.tower.radius = 200;
         cash -= 25;
         this.tower.level = 1;
         this.tower.type = "flameTower";
         this.tower.ammunition = "flame";
-        this.tower.bulletDamage = .02;
+        this.tower.bulletDamage = .005;
         towers.add(this.tower);
       } else if(towerSelected === 'archerTower'){
         this.tower.animations.add("levelOne", [0], 10, true);
@@ -169,16 +169,22 @@ Tower.prototype.fire = function(tower, enemy) {
         iceWind.play();
       } else if(tower.type === "flameTower") {
         bullet = flames.getFirstExists(false);
-        bullet.lifespan = tower.radius * 2;
+        bullet.lifespan = tower.radius * 6;
       } else if(tower.type === "archerTower") {
         bullet = arrows.getFirstExists(false);
         bullet.lifespan = tower.radius * 2;
         archerShotSound.play();
       }
       if (bullet && typeof tower.killZone[(tower.killZone.length - 1)] != "undefined") {
+        if (bullet.key === 'flame') {
+          bullet.reset(tower.x+16, tower.y+5, tower.bulletDamage);
+          bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, tower.killZone[(tower.killZone.length - 1)].x, tower.killZone[(tower.killZone.length - 1)].y)) * 180 / Math.PI;
+          game.physics.arcade.moveToObject(bullet, tower.killZone[(tower.killZone.length - 1)], 150);
+        } else{
           bullet.reset(tower.x+16, tower.y+5, tower.bulletDamage);
           bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, tower.killZone[(tower.killZone.length - 1)].x, tower.killZone[(tower.killZone.length - 1)].y)) * 180 / Math.PI;
           game.physics.arcade.moveToObject(bullet, tower.killZone[(tower.killZone.length - 1)], 500);
+        }
       }
 
       tower.fireLastTime = game.time.now + tower.fireTime;
