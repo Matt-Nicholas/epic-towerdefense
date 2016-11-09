@@ -31,7 +31,7 @@
           messagingSenderId: "509983097590"
         });
 
-        var game = new Phaser.Game(992, 640, Phaser.AUTO, 'gameContainer', {preload: preload, create: create, update: update, render: render});
+        var game = new Phaser.Game(992, 750, Phaser.AUTO, 'gameContainer', {preload: preload, create: create, update: update, render: render});
         var tileSquare = 32;
         var playerHealth = 20;
         var map, layer;
@@ -50,6 +50,8 @@
         var button2;
         var button3;
 
+        var setRangeSize = false;
+
         var explosion;
 
         var attackStat = 0;
@@ -58,6 +60,13 @@
 
         var cash = 50000;
 
+        //circlex and y
+
+        var circleX;
+        var circleY;
+        var circle;
+
+        var graphics;
 
         var bmpText;
         var nextWaveText;
@@ -77,7 +86,7 @@
 
         var barConfig = {x: 200, y: 100};
 
-        var towerSelected;
+        var towerSelected = "Not Selected";
 
         var enemysAnimation = [{'name': 'blackCat','length': 12},{'name': 'rat','length': 12},{'name': 'brownDog','length': 12}];
 
@@ -92,11 +101,12 @@
             game.load.image('healthBar', 'assets/images/healthBar.png');
 
             game.load.spritesheet('plasmaTower', 'assets/sprites/testTower.png',32,32,3);
+
             game.load.image('canonTower', 'assets/sprites/tower1-32.png');
 
             game.load.spritesheet('plasma', 'assets/sprites/plasmas.png', 16, 16, 12);
 
-            game.load.spritesheet('frostTower', 'assets/sprites/iceTower.png',32,32,1);
+            game.load.spritesheet('frostTower', 'assets/sprites/iceTower.png',32,32,6);
 
 
             game.load.image('canon', 'assets/sprites/tower1-32.png');
@@ -109,7 +119,7 @@
              game.load.spritesheet('rat', 'assets/sprites/rat.png', 32, 32);
              game.load.spritesheet('brownDog', 'assets/sprites/brownDog.png', 32, 32);
 
-             game.load.spritesheet('button3', 'assets/sprites/iceTower.png', 32,32,1);
+             game.load.image('button3', 'assets/images/iceButton.png', 48,48);
              game.load.spritesheet('button2', 'assets/sprites/tower-48.png', 48, 48);
              game.load.spritesheet('button', 'assets/sprites/tower1.png', 48, 71, 1);
 
@@ -143,9 +153,15 @@
              * Towers Bullets
              */
 
-             bmpText = game.add.bitmapText(800, 500, 'desyrel', 'Cash:', 24);
-             nextWaveText = game.add.bitmapText(890, 606, 'desyrel',"" ,24);
-             healthText = game.add.bitmapText(800, 550, 'desyrel', 'Health:', 24);
+             graphics = game.add.graphics(0, 0);
+
+             graphics.beginFill(0xFFFF0B, 0.5);
+             circle = graphics.drawCircle(0,0,100);
+             graphics.endFill();
+
+             bmpText = game.add.bitmapText(200, 650, 'desyrel', 'Cash:', 24);
+             nextWaveText = game.add.bitmapText(770, 645, 'desyrel',"" ,24);
+             healthText = game.add.bitmapText(500, 650, 'desyrel', 'Health:', 24);
 
              towerStatsText = game.add.bitmapText(800, 300, 'desyrel', 'Tower:', 24);
 
@@ -154,7 +170,7 @@
 
              //highScoreText = game.add.bitmapText(500, 400, 'desyrel', 'HighScore:', 24);
 
-             scoreText = game.add.bitmapText(800, 450, 'desyrel', 'Score:', 24);
+             scoreText = game.add.bitmapText(50, 650, 'desyrel', 'Score:', 24);
 
              //highScoreText = game.add.bitmapText(200, 200, 'desyrel', "high scores", 24);
 
@@ -164,7 +180,7 @@
              button2 = game.add.button(810, 81, 'button2', plasmaTowerClick);
              button3 = game.add.button(810, 140, 'button3', frostTowerClick);
 
-             readyForWaveButton = game.add.button(800, 560, 'startButton', readyForWave);
+             readyForWaveButton = game.add.button(680, 600, 'startButton', readyForWave);
              increment = game.add.button(900, 250, 'plusSign', upgradeTower);
 
              plasmas = game.add.group();
@@ -243,7 +259,15 @@
         function render() {
 
         }
+
         function update() {
+
+          if(playerHealth < 0) {
+            nextWaveActive = false;
+            nextWaveTimer = 100;
+            uploadScore();
+          }
+
           if(nextWaveTimer <= 0 ){
             readyForWaveButton.tint = 0x566573;
           }else{
@@ -294,27 +318,32 @@
                 if(tower.input.pointerDown()){
                   tower.aplha = 0.5;
 
+                  if(circle.x != tower.x + 15){
+                    setRangeSize = false;
+                  }
+
+                  circle.x = tower.x + 15;
+                  circle.y = tower.y + 15;
+
+                  console.log(circle);
+                  // if(setRangeSize == false){
+                    circle.scale.setTo((tower.radius * 0.01), (tower.radius * 0.01));
+
+                  //   setRangeSize = true;
+                  // }
+
                   clickedTower = tower;
                   towerSelected = tower.type;
                   levelStat = tower.level;
                   attackStat = tower.bulletDamage;
                   speedStat = Math.floor( (1 / tower.fireTime) * 10000);
-                  // if (tower.type === "meh") {
-                  //   speedStat = Math.floor( (1 / tower.fireTime) * 10000);
-                  //   towerSelected = "meh";
-                  //   levelStat = tower.level;
-                  //   clickedTower = tower;
-                  // } else if (tower.type == "bitchin"){
-                  //   speedStat = Math.floor( (1 / tower.fireTime) * 10000);
-                  //   towerSelected = "bitchin";
-                  //   levelStat = tower.level;
-                  //   clickedTower = tower;
-                  // } else if (tower.type == "ice"){
-                  //   speedStat = Math.floor( (1 / tower.fireTime) * 10000);
-                  //   towerSelected = "ice";
-                  //   levelStat = tower.level;
-                  //   clickedTower = tower;
-                  // }
+
+                  if(tower.level === 3){
+                    increment.visible = false;
+                  } else{
+                    increment.visible = true;
+                  }
+
                 }
 
               });
@@ -337,8 +366,8 @@
                 waveActive = true;
               }
         }
-        function listener(pointer) {
 
+        function listener(pointer) {
 
           if (canAddTower) {
               /*
@@ -354,6 +383,8 @@
               Tower.prototype.add(pointer);
             }
           }
+
+          canAddTower = false;
         }
 
 
@@ -367,12 +398,9 @@
           enemy.anchor.x = 0.5;
           enemy.anchor.y = 0.5;
           enemy.animations.add('kaboom');
-
         }
 
         function nextWave() {
-          uploadScore();
-
           currentWave += 1;
           waveTimer = setTimeout(function() {
             generateEnemy(currentWave);
@@ -385,12 +413,8 @@
             generateEnemy(currentWave);
             nextWaveTimer = 0;
           }
-          // if(waveActive === false) {
-          //   currentWave += 1;
-          //   waveActive = true;
-          //   generateEnemy(currentWave);
-          // }
         }
+
         function generateEnemy(wave) {
           waveActive = true;
           var i = 0;
@@ -466,11 +490,11 @@
 
             topTen = findTopTen(scoresArray);
 
-            for (var i = 0; i < topTen; i++) {
-
+            for (var i = 0; i < 11; i++) {
+              highScores = highScores + "\n" + topTen[i];
             }
 
-            highScores = "\n" + topTen[0] + "\n" + topTen[1] + "\n" + topTen[2];
+            // highScores = "\n" + topTen[0] + "\n" + topTen[1] + "\n" + topTen[2];
 
             highScoreText.setText("High Scores:" + highScores);
           })

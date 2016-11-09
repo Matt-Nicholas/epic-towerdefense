@@ -24,6 +24,7 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         this.tower.bulletDamage = 1;
         towers.add(this.tower);
       }
+
       else if(towerSelected === 'frostTower') {
         this.tower.fireTime = 10;
         this.tower.radius = 100;
@@ -33,6 +34,10 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         this.tower.ammunition = "frost";
         this.tower.bulletDamage = 0;
         towers.add(this.tower);
+        this.tower.animations.add('levelOne',[0,1], 6, true);
+        this.tower.animations.add('levelTwo',[2,3], 6, true);
+        this.tower.animations.add('levelThree',[4,5], 6, true);
+        this.tower.animations.play('levelOne');
       } else if(towerSelected === 'plasmaTower'){
         this.tower = game.add.sprite(worldX, worldY, tile);
         this.tower.fireTime = 10;
@@ -58,14 +63,13 @@ Tower.prototype.add = function(pointer) {
 }
 
 Tower.prototype.levelTwo = function(tower) {
-  console.log(tower);
-   tower.animations.add('levelTwo',[1], false);
    tower.animations.play('levelTwo');
 }
 
 Tower.prototype.levelThree = function(tower) {
-   tower.animations.add('levelThree',[2], false);
    tower.animations.play('levelThree');
+
+   increment.visible = false;
 }
 
 Tower.prototype.upgradeTower = function(clickedTower) {
@@ -93,7 +97,6 @@ Tower.prototype.upgradeTower = function(clickedTower) {
       clickedTower.level += 1;
       clickedTower.bulletDamage = clickedTower.bulletDamage * 1.25;
       clickedTower.fireTime = clickedTower.fireTime * 0.75;
-
       attackStat = clickedTower.bulletDamage;
       speedStat = Math.floor((1 / clickedTower.fireTime) * 10000);
       levelStat = clickedTower.level;
