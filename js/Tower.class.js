@@ -34,7 +34,9 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         this.tower.bulletDamage = 0;
         towers.add(this.tower);
       } else if(towerSelected === 'plasmaTower'){
-        this.tower = game.add.sprite(worldX, worldY, tile);
+        this.tower.animations.add("levelOne", [0], 10, true);
+        this.tower.animations.add("levelTwo", [1], 10, true);
+        this.tower.animations.add("levelThree", [2], 10, true);
         this.tower.fireTime = 10;
         this.tower.radius = 200;
         cash -= 25;
@@ -43,7 +45,32 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         this.tower.ammunition = "plasma";
         this.tower.bulletDamage = .02;
         towers.add(this.tower);
-
+      } else if(towerSelected === 'flameTower'){
+        this.tower.animations.add("levelOne", [0,1,2], 10, true);
+        this.tower.animations.add("levelTwo", [3,4,5], 10, true);
+        this.tower.animations.add("levelThree", [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21], 10, true);
+        this.tower.animations.play("levelOne")
+        this.tower.animations
+        this.tower.fireTime = 10;
+        this.tower.radius = 200;
+        cash -= 25;
+        this.tower.level = 1;
+        this.tower.type = "flameTower";
+        this.tower.ammunition = "flame";
+        this.tower.bulletDamage = .02;
+        towers.add(this.tower);
+      } else if(towerSelected === 'archerTower'){
+        this.tower.animations.add("levelOne", [0], 10, true);
+        this.tower.animations.add("levelTwo", [1], 10, true);
+        this.tower.animations.add("levelThree", [2], 10, true);
+        this.tower.fireTime = 500;
+        this.tower.radius = 200;
+        cash -= 25;
+        this.tower.level = 1;
+        this.tower.type = "archerTower";
+        this.tower.ammunition = "arrow";
+        this.tower.bulletDamage = .02;
+        towers.add(this.tower);
       }
       this.tower.killZone = [];
       this.tower.fireLastTime = game.time.now + this.tower.fireTime;
@@ -51,6 +78,7 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
 }
 
 Tower.prototype.add = function(pointer) {
+  console.log('here')
   if(canAddTower) {
     Tower.prototype.posit(pointer)
   }
@@ -59,12 +87,10 @@ Tower.prototype.add = function(pointer) {
 
 Tower.prototype.levelTwo = function(tower) {
   console.log(tower);
-   tower.animations.add('levelTwo',[1], false);
    tower.animations.play('levelTwo');
 }
 
 Tower.prototype.levelThree = function(tower) {
-   tower.animations.add('levelThree',[2], false);
    tower.animations.play('levelThree');
 }
 
@@ -76,6 +102,12 @@ Tower.prototype.upgradeTower = function(clickedTower) {
     towerCash = 150;
   }
   else if(towerSelected == 'frostTower'){
+    towerCash = 200;
+  }
+  else if(towerSelected == 'flameTower'){
+    towerCash = 200;
+  }
+  else if(towerSelected == 'archerTower'){
     towerCash = 200;
   }
     if(cash > towerCash && clickedTower.level == 1){
@@ -126,8 +158,8 @@ Tower.prototype.fire = function(tower, enemy) {
       } else if(tower.type === "frostTower") {
         bullet = frosts.getFirstExists(false);
         bullet.lifespan = tower.radius * 2;
-      } else if(tower.type === "fireTower") {
-        bullet = fires.getFirstExists(false);
+      } else if(tower.type === "flameTower") {
+        bullet = flames.getFirstExists(false);
         bullet.lifespan = tower.radius * 2;
       } else if(tower.type === "archerTower") {
         bullet = arrows.getFirstExists(false);

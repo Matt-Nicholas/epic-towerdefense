@@ -1,480 +1,521 @@
 <!DOCTYPE html>
 <html lang="en">
-    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no" />
-        <title>Tower Defense</title>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/phaser/2.0.6/phaser.min.js"></script>
-        <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-        <script type="text/javascript" src="js/Enemy.class.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/3.6.0/firebase.js"></script>
-        <style>
-            *{
-                margin : 0;
-            }
-        </style>
-        <script type="text/javascript" src="js/Tower.class.js"></script>
-    </head>
-    <body>
-      <h1>Schmower Defense</h1>
-    </body>
-    <script type="text/javascript">
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no" />
+    <title>Tower Defense</title>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/phaser/2.0.6/phaser.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/Enemy.class.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.6.0/firebase.js"></script>
+    <style>
+    *{
+      margin : 0;
+    }
+    </style>
+    <script type="text/javascript" src="js/Tower.class.js"></script>
+  </head>
+  <body>
+    <h1>Schmower Defense</h1>
+  </body>
+  <script type="text/javascript">
 
-        //firebase stuff
+  //firebase stuff
 
-        var app = firebase.initializeApp({
-          apiKey: "AIzaSyColnTXdUlE1jERm6ph_b0GwF5QH8ofA0o",
-          authDomain: "kitten-defense.firebaseapp.com",
-          databaseURL: "https://kitten-defense.firebaseio.com",
-          storageBucket: "kitten-defense.appspot.com",
-          messagingSenderId: "509983097590"
-        });
+  var app = firebase.initializeApp({
+    apiKey: "AIzaSyColnTXdUlE1jERm6ph_b0GwF5QH8ofA0o",
+    authDomain: "kitten-defense.firebaseapp.com",
+    databaseURL: "https://kitten-defense.firebaseio.com",
+    storageBucket: "kitten-defense.appspot.com",
+    messagingSenderId: "509983097590"
+  });
 
-        var game = new Phaser.Game(992, 640, Phaser.AUTO, 'gameContainer', {preload: preload, create: create, update: update, render: render});
-        var tileSquare = 32;
-        var playerHealth = 20;
-        var map, layer;
-        var tileForbiden = ["0-2", "0-3", "2-0", "4-1", "5-0", "1-2", "1-3", "2-2", "2-3", "3-2", "3-3", "4-2", "4-3", "5-2", "5-3", "6-2", "6-3", "7-2", "7-3", "8-2", "8-3", "9-2", "9-3", "10-2", "10-3", "9-4", "10-4", "9-5", "10-5", "9-6", "10-6", "11-5", "11-6", "12-5", "12-6", "13-5", "13-6", "14-5", "14-6", "15-5", "15-6", "15-4", "14-4", "15-3", "14-3", "15-2", "14-2", "16-2", "16-3", "17-2", "17-3", "18-2", "18-3", "19-2", "19-3", "20-2", "20-3", "21-2", "21-3", "22-2", "22-3", "23-2", "23-3", "22-4", "23-4", "22-5", "23-5", "22-6", "23-6", "22-7", "23-7", "22-8", "23-8", "22-9", "23-9", "22-10", "23-10", "22-11", "23-11", "21-10", "21-11", "20-10", "20-11", "19-10", "19-11", "18-10", "18-11", "17-10", "17-11", "16-10", "16-11", "15-10", "15-11", "14-10", "14-11", "13-10", "13-11", "13-12", "13-12", "14-12", "14-12", "12-12", "12-11", "11-12", "11-11", "10-12", "10-11", "9-12", "9-11", "8-12", "8-11", "7-12", "7-11", "7-10", "8-10", "7-9", "8-9", "7-8", "8-8", "7-7", "8-7", "6-7", "6-8", "5-7", "5-8", "4-7", "4-8", "3-7", "3-8", "2-7", "2-8", "2-9", "3-9", "2-10", "3-10", "2-11", "3-11", "2-12", "3-12", "2-13", "3-13", "2-14", "3-14", "2-15", "3-15", "4-14", "4-15", "5-14", "5-15", "6-14", "6-15", "7-14", "7-15", "8-14", "8-15", "9-14", "9-15", "10-14", "10-15", "11-14", "11-15", "12-14", "12-15", "12-16", "11-16", "12-17", "11-17", "12-18", "11-18", "12-19", "11-19", "16-14", "16-15", "16-16", "16-17", "16-18", "17-14", "17-15", "17-16", "17-17", "17-18", "18-14", "18-15", "18-16", "18-17", "18-18", "19-14", "19-15", "19-16", "19-17", "19-18", "20-14", "20-15", "20-16", "20-17", "20-18", "21-14", "21-15", "21-16", "21-17", "21-18", "22-14", "22-15", "22-16", "22-17", "22-18", "15-16", "21-13", "25-0", "26-0", "27-0", "28-0", "29-0", "30-0", "25-1", "26-1", "27-1", "28-1", "29-1", "30-1", "25-2", "26-2", "27-2", "28-2", "29-2", "30-2", "25-3", "26-3", "27-3", "28-3", "29-3", "30-3", "25-4", "26-4", "27-4", "28-4", "29-4", "30-4", "25-5", "26-5", "27-5", "28-5", "29-5", "30-5", "25-6", "26-6", "27-6", "28-6", "29-6", "30-6", "25-7", "26-7", "27-7", "28-7", "29-7", "30-7", "25-8", "26-8", "27-8", "28-8", "29-8", "30-8", "25-9", "26-9", "27-9", "28-9", "29-9", "30-9", "25-10", "26-10", "27-10", "28-10", "29-10", "30-10", "25-11", "26-11", "27-11", "28-11", "29-11", "30-11", "25-12", "26-12", "27-12", "28-12", "29-12", "30-12", "25-13", "26-13", "27-13", "28-13", "29-13", "30-13", "25-14", "26-14", "27-14", "28-14", "29-14", "30-14", "25-15", "26-15", "27-15", "28-15", "29-15", "30-15", "25-16", "26-16", "27-16", "28-16", "29-16", "30-16", "25-17", "26-17", "27-17", "28-17", "29-17", "30-17", "25-18", "26-18", "27-18", "28-18", "29-18", "30-18", "25-19", "26-19", "27-19", "28-19", "29-19", "30-19"]
-        var path = [{x: 0, y: 3},{x: 1, y: 3},{x: 2, y: 3},{x:3, y:3},{x:4, y:3},{x:5, y:3},{x:6, y:3},{x:7, y:3},{x:8, y:3},{x:9, y:3},{x:10, y:3},{x:10, y:4},{x:10, y:5},{x:10, y:6},{x:11, y:6},{x:12, y:6},{x:13, y:6},{x:14, y:6},{x:15, y:6},{x:15, y:5},{x:15, y:4},{x:15, y:3},{x:16, y:3},{x:17, y:3},{x:18, y:3},{x:19, y:3},{x:20, y:3},{x:21, y:3},{x:22, y:3},{x:23, y:3},{x:23, y:4},{x:23, y:5},{x:23, y:6},{x:23, y:7},{x:23, y:8},{x:23, y:9},{x:23, y:10},{x:23, y:11},{x:22, y:11},{x:21, y:11},{x:20, y:11},{x:19, y:11},{x:18, y:11},{x:17, y:11},{x:16, y:11},{x:15, y:11},{x:14, y:11},{x:14, y:12},{x:13, y:12},{x:12, y:12},{x:11, y:12},{x:10, y:12},{x:9, y:12},{x:8, y:12},{x:8, y:11},{x:8, y:10},{x:8, y:9},{x:8, y:8},{x:7, y:8},{x:6, y:8},{x:5, y:8},{x:4, y:8},{x:3, y:8},{x:3, y:9},{x:3, y:10},{x:3, y:11},{x:3, y:12},{x:3, y:13},{x:3, y:14},{x:3, y:15},{x:4, y:15},{x:5, y:15},{x:6, y:15},{x:7, y:15},{x:8, y:15},{x:9, y:15},{x:10, y:15},{x:11, y:15},{x:12, y:15},{x:12, y:16},{x:12, y:17},{x:12, y:18},{x:12, y:19},{x:12, y:20}];
-
-        var waveActive = false;
-        var nextWaveActive = false;
-        var currentWave = 0;
-        var towers = [];
-        var canAddTower = true;
-        var nextWaveTimer = 0;
-        var waveTimer;
-
-        var button;
-        var button2;
-        var button3;
-
-        var explosion;
-
-        var attackStat = 0;
-        var speedStat = 0;
-        var levelStat = 0;
-
-        var cash = 50000;
-
-
-        var bmpText;
-        var nextWaveText;
-        var towerStatsText;
-        var attackText;
-        var speedText;
-        var levelText;
-        var highScoreText;
-
-        var towerCash;
-
-        var highScores;
-
-        var score = 0;
-
-        var clickedTower;
-
-        var barConfig = {x: 200, y: 100};
-
-        var towerSelected;
-
-        var enemysAnimation = [{'name': 'blackCat','length': 12},{'name': 'rat','length': 12},{'name': 'brownDog','length': 12}];
+  var game = new Phaser.Game(992, 640, Phaser.AUTO, 'gameContainer', {preload: preload, create: create, update: update, render: render});
+  var tileSquare = 32;
+  var playerHealth = 20;
+  var map, layer;
+  var tileForbiden = ["0-2", "0-3", "2-0", "4-1", "5-0", "1-2", "1-3", "2-2", "2-3", "3-2", "3-3", "4-2", "4-3", "5-2", "5-3", "6-2", "6-3", "7-2", "7-3", "8-2", "8-3", "9-2", "9-3", "10-2", "10-3", "9-4", "10-4", "9-5", "10-5", "9-6", "10-6", "11-5", "11-6", "12-5", "12-6", "13-5", "13-6", "14-5", "14-6", "15-5", "15-6", "15-4", "14-4", "15-3", "14-3", "15-2", "14-2", "16-2", "16-3", "17-2", "17-3", "18-2", "18-3", "19-2", "19-3", "20-2", "20-3", "21-2", "21-3", "22-2", "22-3", "23-2", "23-3", "22-4", "23-4", "22-5", "23-5", "22-6", "23-6", "22-7", "23-7", "22-8", "23-8", "22-9", "23-9", "22-10", "23-10", "22-11", "23-11", "21-10", "21-11", "20-10", "20-11", "19-10", "19-11", "18-10", "18-11", "17-10", "17-11", "16-10", "16-11", "15-10", "15-11", "14-10", "14-11", "13-10", "13-11", "13-12", "13-12", "14-12", "14-12", "12-12", "12-11", "11-12", "11-11", "10-12", "10-11", "9-12", "9-11", "8-12", "8-11", "7-12", "7-11", "7-10", "8-10", "7-9", "8-9", "7-8", "8-8", "7-7", "8-7", "6-7", "6-8", "5-7", "5-8", "4-7", "4-8", "3-7", "3-8", "2-7", "2-8", "2-9", "3-9", "2-10", "3-10", "2-11", "3-11", "2-12", "3-12", "2-13", "3-13", "2-14", "3-14", "2-15", "3-15", "4-14", "4-15", "5-14", "5-15", "6-14", "6-15", "7-14", "7-15", "8-14", "8-15", "9-14", "9-15", "10-14", "10-15", "11-14", "11-15", "12-14", "12-15", "12-16", "11-16", "12-17", "11-17", "12-18", "11-18", "12-19", "11-19", "16-14", "16-15", "16-16", "16-17", "16-18", "17-14", "17-15", "17-16", "17-17", "17-18", "18-14", "18-15", "18-16", "18-17", "18-18", "19-14", "19-15", "19-16", "19-17", "19-18", "20-14", "20-15", "20-16", "20-17", "20-18", "21-14", "21-15", "21-16", "21-17", "21-18", "22-14", "22-15", "22-16", "22-17", "22-18", "15-16", "21-13", "25-0", "26-0", "27-0", "28-0", "29-0", "30-0", "25-1", "26-1", "27-1", "28-1", "29-1", "30-1", "25-2", "26-2", "27-2", "28-2", "29-2", "30-2", "25-3", "26-3", "27-3", "28-3", "29-3", "30-3", "25-4", "26-4", "27-4", "28-4", "29-4", "30-4", "25-5", "26-5", "27-5", "28-5", "29-5", "30-5", "25-6", "26-6", "27-6", "28-6", "29-6", "30-6", "25-7", "26-7", "27-7", "28-7", "29-7", "30-7", "25-8", "26-8", "27-8", "28-8", "29-8", "30-8", "25-9", "26-9", "27-9", "28-9", "29-9", "30-9", "25-10", "26-10", "27-10", "28-10", "29-10", "30-10", "25-11", "26-11", "27-11", "28-11", "29-11", "30-11", "25-12", "26-12", "27-12", "28-12", "29-12", "30-12", "25-13", "26-13", "27-13", "28-13", "29-13", "30-13", "25-14", "26-14", "27-14", "28-14", "29-14", "30-14", "25-15", "26-15", "27-15", "28-15", "29-15", "30-15", "25-16", "26-16", "27-16", "28-16", "29-16", "30-16", "25-17", "26-17", "27-17", "28-17", "29-17", "30-17", "25-18", "26-18", "27-18", "28-18", "29-18", "30-18", "25-19", "26-19", "27-19", "28-19", "29-19", "30-19"]
+  var path = [{x: 0, y: 3},{x: 1, y: 3},{x: 2, y: 3},{x:3, y:3},{x:4, y:3},{x:5, y:3},{x:6, y:3},{x:7, y:3},{x:8, y:3},{x:9, y:3},{x:10, y:3},{x:10, y:4},{x:10, y:5},{x:10, y:6},{x:11, y:6},{x:12, y:6},{x:13, y:6},{x:14, y:6},{x:15, y:6},{x:15, y:5},{x:15, y:4},{x:15, y:3},{x:16, y:3},{x:17, y:3},{x:18, y:3},{x:19, y:3},{x:20, y:3},{x:21, y:3},{x:22, y:3},{x:23, y:3},{x:23, y:4},{x:23, y:5},{x:23, y:6},{x:23, y:7},{x:23, y:8},{x:23, y:9},{x:23, y:10},{x:23, y:11},{x:22, y:11},{x:21, y:11},{x:20, y:11},{x:19, y:11},{x:18, y:11},{x:17, y:11},{x:16, y:11},{x:15, y:11},{x:14, y:11},{x:14, y:12},{x:13, y:12},{x:12, y:12},{x:11, y:12},{x:10, y:12},{x:9, y:12},{x:8, y:12},{x:8, y:11},{x:8, y:10},{x:8, y:9},{x:8, y:8},{x:7, y:8},{x:6, y:8},{x:5, y:8},{x:4, y:8},{x:3, y:8},{x:3, y:9},{x:3, y:10},{x:3, y:11},{x:3, y:12},{x:3, y:13},{x:3, y:14},{x:3, y:15},{x:4, y:15},{x:5, y:15},{x:6, y:15},{x:7, y:15},{x:8, y:15},{x:9, y:15},{x:10, y:15},{x:11, y:15},{x:12, y:15},{x:12, y:16},{x:12, y:17},{x:12, y:18},{x:12, y:19},{x:12, y:20}];
+  var waveActive = false;
+  var nextWaveActive = false;
+  var currentWave = 0;
+  var towers = [];
+  var canAddTower = true;
+  var nextWaveTimer = 0;
+  var waveTimer;
+  var button;
+  var button2;
+  var button3;
+  var button4;
+  var button5;
+  var explosion;
+  var attackStat = 0;
+  var speedStat = 0;
+  var levelStat = 0;
+  var cash = 50000;
+  var bmpText;
+  var nextWaveText;
+  var towerStatsText;
+  var attackText;
+  var speedText;
+  var levelText;
+  var highScoreText;
+  var towerCash;
+  var highScores;
+  var score = 0;
+  var clickedTower;
+  var barConfig = {x: 200, y: 100};
+  var towerSelected;
+  var enemysAnimation = [{'name': 'blackCat','length': 12},{'name': 'rat','length': 12},{'name': 'brownDog','length': 12}];
 
 
-        function preload() {
+  function preload() {
 
-           game.load.bitmapFont('desyrel', 'assets/fonts/bitmapFonts/gem.png', 'assets/fonts/bitmapFonts/gem.xml');
+    game.load.bitmapFont('desyrel', 'assets/fonts/bitmapFonts/gem.png', 'assets/fonts/bitmapFonts/gem.xml');
+    game.load.image('tiles', 'assets/maps/map_tiles.png');
+    game.load.image('healthBar', 'assets/images/healthBar.png');
+    game.load.tilemap('level1', 'assets/maps/tower-defense.json', null, Phaser.Tilemap.TILED_JSON);
 
-            game.load.tilemap('level1', 'assets/maps/tower-defense.json', null, Phaser.Tilemap.TILED_JSON);
-            game.load.image('tiles', 'assets/maps/map_tiles.png');
+    /*
+    * Tower Preload
+    */
+    game.load.spritesheet('plasmaTower', 'assets/sprites/plasmaTowers.png',32,32,3);
+    game.load.image('canonTower', 'assets/sprites/tower1-32.png');
+    game.load.spritesheet('frostTower', 'assets/sprites/iceTower.png',32,32,1);
+    game.load.spritesheet('archerTower', 'assets/sprites/archerTowers.png',32,32,4);
+    game.load.spritesheet('flameTower', 'assets/sprites/barad-dur.png',32,32,22);
+    // explosion
+    game.load.spritesheet('kaboom','assets/sprites/explode.png',32,32,17);
 
-            game.load.image('healthBar', 'assets/images/healthBar.png');
 
-            game.load.spritesheet('plasmaTower', 'assets/sprites/testTower.png',32,32,3);
-            game.load.image('canonTower', 'assets/sprites/tower1-32.png');
+    /*
+    * Ammo Preload
+    */
+    game.load.image('canon', 'assets/sprites/arrow.png');
+    game.load.image('frost', 'assets/sprites/frost.png',32,32);
+    game.load.spritesheet('plasma', 'assets/sprites/plasmas.png', 16, 16, 12);
+    game.load.image('flame', 'assets/images/flame.png', 32, 24, 12);
+    game.load.spritesheet('arrow', 'assets/sprites/arrow.png', 4, 4, 12);
 
-            game.load.spritesheet('plasma', 'assets/sprites/plasmas.png', 16, 16, 12);
+    /*
+    * Enemy Preload
+    */
+    game.load.spritesheet('blackCat', 'assets/sprites/blackCat.png', 32, 32);
+    game.load.spritesheet('rat', 'assets/sprites/rat.png', 32, 32);
+    game.load.spritesheet('brownDog', 'assets/sprites/brownDog.png', 32, 32);
 
-            game.load.spritesheet('frostTower', 'assets/sprites/iceTower.png',32,32,1);
+    /*
+    * Button Preload
+    */
+    game.load.spritesheet('button3', 'assets/sprites/iceTower.png', 32,32,1);
+    game.load.spritesheet('button5', 'assets/sprites/plasmaTowers.png', 32,32,1);
+    game.load.spritesheet('button4', 'assets/images/barad-dur-button.png', 64,64,1);
+    game.load.spritesheet('button2', 'assets/sprites/archerTowers.png', 32, 32,4);
+    game.load.spritesheet('button', 'assets/sprites/tower1.png', 48, 71, 1);
+
+    game.load.spritesheet('plusSign', 'assets/sprites/plusSign.png', 32, 32);
+    game.load.spritesheet('startButton', 'assets/sprites/start.png', 128, 128);
+
+  }
+
+  function create() {
+
+    /**
+    * Init map
+    */
+    game.physics.startSystem(Phaser.Physics.ARCADE)
+    game.world.setBounds(0, 0, 800, 640);
+
+    map = game.add.tilemap('level1');
+    map.addTilesetImage('Level1', 'tiles');
+    layer = map.createLayer('Ground');
+    layer.resizeWorld();
+    //game.input.onDown.add(listener, this);
+    /*
+    * Tower
+    */
+    towers = game.add.group();
+    game.physics.enable(towers, Phaser.Physics.ARCADE);
+
+    /*
+    * Info Panel
+    */
+    bmpText = game.add.bitmapText(800, 500, 'desyrel', 'Cash:', 24);
+    nextWaveText = game.add.bitmapText(890, 606, 'desyrel',"" ,24);
+    healthText = game.add.bitmapText(800, 550, 'desyrel', 'Health:', 24);
+    towerStatsText = game.add.bitmapText(800, 300, 'desyrel', 'Tower:', 24);
+    attackText = game.add.bitmapText(800, 350, 'desyrel', 'Attack:', 24);
+    speedText = game.add.bitmapText(800, 400, 'desyrel', 'Speed:', 24);
+    //highScoreText = game.add.bitmapText(500, 400, 'desyrel', 'HighScore:', 24);
+    scoreText = game.add.bitmapText(800, 450, 'desyrel', 'Score:', 24);
+    //highScoreText = game.add.bitmapText(200, 200, 'desyrel', "high scores", 24);
+    levelText = game.add.bitmapText(800, 250, 'desyrel', 'Level:', 24);
+
+    // BUTTONS
+    button = game.add.button(810, 10, 'button', canonTowerClick);
+    button2 = game.add.button(810, 81, 'button2', archerTowerClick);
+    button3 = game.add.button(810, 140, 'button3', frostTowerClick);
+    button4 = game.add.button(870, 10, 'button4', flameTowerClick);
+    button5 = game.add.button(870, 81, 'button5', plasmaTowerClick);
+    readyForWaveButton = game.add.button(800, 560, 'startButton', readyForWave);
+    increment = game.add.button(900, 250, 'plusSign', upgradeTower);
 
 
-            game.load.image('canon', 'assets/sprites/tower1-32.png');
-            game.load.image('frost', 'assets/images/frost.png',32,32);
 
-            /*
-             * Enemy Preload
-             */
-             game.load.spritesheet('blackCat', 'assets/sprites/blackCat.png', 32, 32);
-             game.load.spritesheet('rat', 'assets/sprites/rat.png', 32, 32);
-             game.load.spritesheet('brownDog', 'assets/sprites/brownDog.png', 32, 32);
+    plasmas = game.add.group();
+    plasmas.enableBody = true;
+    plasmas.physicsBodyType = Phaser.Physics.ARCADE;
 
-             game.load.spritesheet('button3', 'assets/sprites/iceTower.png', 32,32,1);
-             game.load.spritesheet('button2', 'assets/sprites/tower-48.png', 48, 48);
-             game.load.spritesheet('button', 'assets/sprites/tower1.png', 48, 71, 1);
+    canons = game.add.group();
+    canons.enableBody = true;
+    canons.physicsBodyType = Phaser.Physics.ARCADE;
 
-             game.load.spritesheet('plusSign', 'assets/sprites/plusSign.png', 32, 32);
-             game.load.spritesheet('startButton', 'assets/sprites/start.png', 128, 128);
+    frosts = game.add.group();
+    frosts.enableBody = true;
+    frosts.physicsBodyType = Phaser.Physics.ARCADE;
 
-             game.load.spritesheet('kaboom','assets/sprites/explode.png',32,32,17);
+    arrows = game.add.group();
+    arrows.enableBody = true;
+    arrows.physicsBodyType = Phaser.Physics.ARCADE;
 
+    flames = game.add.group();
+    flames.enableBody = true;
+    flames.physicsBodyType = Phaser.Physics.ARCADE;
+    /*
+    *Creates Bullet Pools for Tower Types
+    */
+    plasmas.createMultiple(1000, 'plasma');
+    plasmas.setAll('anchor.x', 0.5);
+    plasmas.setAll('anchor.y', 0.6);
+    plasmas.setAll('outOfBoundsKill', true);
+    plasmas.setAll('checkWorldBounds', true);
+
+    canons.createMultiple(30, 'canon');
+    canons.setAll('anchor.x', 0.5);
+    canons.setAll('anchor.y', 1);
+    canons.setAll('outOfBoundsKill', true);
+    canons.setAll('checkWorldBounds', true);
+
+    frosts.createMultiple(1000, 'frost');
+    frosts.setAll('anchor.x', 0.5);
+    frosts.setAll('anchor.y', 0.6);
+    frosts.setAll('outOfBoundsKill', true);
+    frosts.setAll('checkWorldBounds', true);
+
+    arrows.createMultiple(1000, 'arrow');
+    arrows.setAll('anchor.x', 0.5);
+    arrows.setAll('anchor.y', 0.6);
+    arrows.setAll('outOfBoundsKill', true);
+    arrows.setAll('checkWorldBounds', true);
+
+    flames.createMultiple(1000, 'flame');
+    flames.setAll('anchor.x', 0.5);
+    flames.setAll('anchor.y', 0.6);
+    flames.setAll('outOfBoundsKill', true);
+    flames.setAll('checkWorldBounds', true);
+
+    /*
+    * Enemy
+    */
+
+    enemys = game.add.group();
+    enemys.enableBody = true;
+    enemys.physicsBodyType = Phaser.Physics.ARCADE;
+
+
+    explosions = game.add.group();
+    explosions.createMultiple(30, 'kaboom');
+    explosions.forEach(setupEnemy, this);
+
+    game.input.onDown.add(listener, this);
+
+
+  }
+
+  function canonTowerClick() {
+    canAddTower = true;
+    towerSelected = "canonTower";
+    attackStat = 1;
+    speedStat = 20;
+  }
+  function plasmaTowerClick() {
+    canAddTower = true;
+    towerSelected = "plasmaTower";
+    attackStat = 2;
+    speedStat = 10;
+  }
+  function archerTowerClick() {
+    canAddTower = true;
+    towerSelected = "archerTower";
+    attackStat = 2;
+    speedStat = 10;
+  }
+  function frostTowerClick() {
+    canAddTower = true;
+    towerSelected = "frostTower";
+    attackStat = 1;
+    speedStat = 10;
+  }
+  function flameTowerClick() {
+    canAddTower = true;
+    towerSelected = "flameTower";
+    attackStat = 1;
+    speedStat = 10;
+  }
+
+  function upgradeTower() {
+    Tower.prototype.upgradeTower(clickedTower);
+  }
+
+  function render() {
+
+  }
+  function update() {
+    if(nextWaveTimer <= 0 ){
+      readyForWaveButton.tint = 0x566573;
+    }else{
+      readyForWaveButton.tint = 0xffffff;
+    }
+    /*
+    * Generate Enemy
+    */
+    enemys.forEach(function(enemy) {
+      if(!(enemy === undefined)) {
+        Enemy.prototype.moveElmt(enemy);
+      }
+    });
+
+    towers.forEach(function(tower) {
+      enemys.forEach(function(enemy) {
+        Tower.prototype.fire(tower, enemy);
+      })
+    });
+
+    game.physics.arcade.overlap(canons, enemys, collisionHandler, null, this);
+    game.physics.arcade.overlap(plasmas, enemys, collisionHandler, null, this);
+    game.physics.arcade.overlap(frosts, enemys, collisionHandler, null, this);
+    game.physics.arcade.overlap(arrows, enemys, collisionHandler, null, this);
+    game.physics.arcade.overlap(flames, enemys, collisionHandler, null, this);
+
+    //Cash
+
+    bmpText.setText("Cash:" + cash);
+
+    nextWaveText.setText(nextWaveTimer);
+
+    healthText.setText("Health:" + playerHealth);
+
+    towerStatsText.setText("Tower:" +  towerSelected);
+
+    attackText.setText("Attack:" + attackStat);
+
+    speedText.setText("Speed:" + speedStat);
+
+    levelText.setText("Level:" + levelStat);
+
+    scoreText.setText("Score:" + score);
+
+    // select
+
+    towers.forEach(function(tower) {
+      tower.inputEnabled = true;
+
+      if(tower.input.pointerDown()){
+        tower.aplha = 0.5;
+
+        clickedTower = tower;
+        towerSelected = tower.type;
+        levelStat = tower.level;
+        attackStat = tower.bulletDamage;
+        speedStat = Math.floor( (1 / tower.fireTime) * 10000);
+        // if (tower.type === "meh") {
+        //   speedStat = Math.floor( (1 / tower.fireTime) * 10000);
+        //   towerSelected = "meh";
+        //   levelStat = tower.level;
+        //   clickedTower = tower;
+        // } else if (tower.type == "bitchin"){
+        //   speedStat = Math.floor( (1 / tower.fireTime) * 10000);
+        //   towerSelected = "bitchin";
+        //   levelStat = tower.level;
+        //   clickedTower = tower;
+        // } else if (tower.type == "ice"){
+        //   speedStat = Math.floor( (1 / tower.fireTime) * 10000);
+        //   towerSelected = "ice";
+        //   levelStat = tower.level;
+        //   clickedTower = tower;
+        // }
+      }
+
+    });
+    if((enemys.length <= 0) && (nextWaveActive === false) && (nextWaveTimer <= 0)) {
+      waveActive = false
+      console.log('ran')
+      nextWaveActive = true;
+      nextWave();
+      nextWaveTimer = 15;
+      var nextWaveTimerActive = setInterval(function() {
+        if(nextWaveTimer <= 0) {
+          clearTimeout(nextWaveTimerActive);
+        } else {
+          nextWaveTimer -= 1;
         }
+      },1000)
+    }
+    if((enemys.length > 1) && nextWaveActive === true) {
+      nextWaveActive = false;
+      waveActive = true;
+    }
+  }
+  function listener(pointer) {
+
+
+    if (canAddTower) {
+      /*
+      * Add tower
+      */
+      if( towerSelected == "plasmaTower" && cash >= 25){
+        Tower.prototype.add(pointer);
+      }
+      else if( towerSelected == "canonTower" && cash >= 50){
+        Tower.prototype.add(pointer);
+      }
+      else if( towerSelected == "frostTower" && cash >= 50){
+        Tower.prototype.add(pointer);
+      }
+      else if( towerSelected == "flameTower" && cash >= 50){
+        Tower.prototype.add(pointer);
+      }
+      else if( towerSelected == "archerTower" && cash >= 50){
+        Tower.prototype.add(pointer);
+      }
+    }
+  }
+
+
+  function collisionHandler(bullet, enemy) {
+
+    if((bullet.key === 'flame') || (bullet.key === 'frost')) {
+      Enemy.prototype.takeHit(enemy, bullet);
+    } else {
+      bullet.kill();
+      Enemy.prototype.takeHit(enemy, bullet);
+    }
+  }
+
+  function setupEnemy (enemy) {
+
+    enemy.anchor.x = 0.5;
+    enemy.anchor.y = 0.5;
+    enemy.animations.add('kaboom');
+
+  }
+
+  function nextWave() {
+    uploadScore();
+
+    currentWave += 1;
+    waveTimer = setTimeout(function() {
+      generateEnemy(currentWave);
+    },15000)
+  }
+
+  function readyForWave() {
+    if(waveActive === false) {
+      clearTimeout(waveTimer);
+      generateEnemy(currentWave);
+      nextWaveTimer = 0;
+    }
+    // if(waveActive === false) {
+    //   currentWave += 1;
+    //   waveActive = true;
+    //   generateEnemy(currentWave);
+    // }
+  }
+  function generateEnemy(wave) {
+    waveActive = true;
+    var i = 0;
+    var enemysBcl = setInterval(function() {
+      if(i < (wave * 2)) {
+        var animEnemy = enemysAnimation[parseInt(Math.random() * enemysAnimation.length)];
+        new Enemy(path[0].x * tileSquare, path[0].y * tileSquare, animEnemy.name, wave);
+      } else {
+        nextWaveActive = false;
+        clearTimeout(enemysBcl);
+      }
+      i++;
+    }, 1000);
+  }
+
+  function takePlayerHit(enemy) {
+    enemy.kill();
+    enemy.destroy();
+    this.enemys.remove(enemy)
+    Tower.prototype.popEnemy(enemy);
+
+    playerHealth -= 1;
+
+  }
+
+  function findTopTen(scoresArray){
+
+    var topTen = [];
+
+    scoresArray.sort(function(a, b) {
+      return b[0] - a[0];
+    });
 
-        function create() {
+    for(var i = 0; i < 11; i ++){
+      topTen.push(scoresArray[i]);
+    }
+    //topTen = [scoresArray[0], scoresArray[1], scoresArray[2]];
 
-            /**
-             * Init map
-             */
-            game.physics.startSystem(Phaser.Physics.ARCADE)
-            game.world.setBounds(0, 0, 800, 640);
-
-            map = game.add.tilemap('level1');
-            map.addTilesetImage('Level1', 'tiles');
-            layer = map.createLayer('Ground');
-            layer.resizeWorld();
-            //game.input.onDown.add(listener, this);
-            /*
-             * Tower
-             */
-             towers = game.add.group();
-            game.physics.enable(towers, Phaser.Physics.ARCADE);
-
-            /*
-             * Towers Bullets
-             */
-
-             bmpText = game.add.bitmapText(800, 500, 'desyrel', 'Cash:', 24);
-             nextWaveText = game.add.bitmapText(890, 606, 'desyrel',"" ,24);
-             healthText = game.add.bitmapText(800, 550, 'desyrel', 'Health:', 24);
-
-             towerStatsText = game.add.bitmapText(800, 300, 'desyrel', 'Tower:', 24);
-
-             attackText = game.add.bitmapText(800, 350, 'desyrel', 'Attack:', 24);
-             speedText = game.add.bitmapText(800, 400, 'desyrel', 'Speed:', 24);
-
-             //highScoreText = game.add.bitmapText(500, 400, 'desyrel', 'HighScore:', 24);
-
-             scoreText = game.add.bitmapText(800, 450, 'desyrel', 'Score:', 24);
-
-             //highScoreText = game.add.bitmapText(200, 200, 'desyrel', "high scores", 24);
-
-             levelText = game.add.bitmapText(800, 250, 'desyrel', 'Level:', 24);
-
-             button = game.add.button(810, 10, 'button', canonTowerClick);
-             button2 = game.add.button(810, 81, 'button2', plasmaTowerClick);
-             button3 = game.add.button(810, 140, 'button3', frostTowerClick);
-
-             readyForWaveButton = game.add.button(800, 560, 'startButton', readyForWave);
-             increment = game.add.button(900, 250, 'plusSign', upgradeTower);
-
-             plasmas = game.add.group();
-             plasmas.enableBody = true;
-             plasmas.physicsBodyType = Phaser.Physics.ARCADE;
-
-             canons = game.add.group();
-             canons.enableBody = true;
-             canons.physicsBodyType = Phaser.Physics.ARCADE;
-
-             frosts = game.add.group();
-             frosts.enableBody = true;
-             frosts.physicsBodyType = Phaser.Physics.ARCADE;
-            /*
-            *Creates Bullet Pools for Tower Types
-            */
-            plasmas.createMultiple(1000, 'plasma');
-            plasmas.setAll('anchor.x', 0.5);
-            plasmas.setAll('anchor.y', 0.6);
-            plasmas.setAll('outOfBoundsKill', true);
-            plasmas.setAll('checkWorldBounds', true);
-
-            canons.createMultiple(30, 'canon');
-            canons.setAll('anchor.x', 0.5);
-            canons.setAll('anchor.y', 1);
-            canons.setAll('outOfBoundsKill', true);
-            canons.setAll('checkWorldBounds', true);
-
-            frosts.createMultiple(1000, 'frost');
-            frosts.setAll('anchor.x', 0.5);
-            frosts.setAll('anchor.y', 0.6);
-            frosts.setAll('outOfBoundsKill', true);
-            frosts.setAll('checkWorldBounds', true);
-
-            /*
-             * Enemy
-             */
-
-             enemys = game.add.group();
-             enemys.enableBody = true;
-             enemys.physicsBodyType = Phaser.Physics.ARCADE;
-
-
-             explosions = game.add.group();
-             explosions.createMultiple(30, 'kaboom');
-             explosions.forEach(setupEnemy, this);
-
-             game.input.onDown.add(listener, this);
-
-
-        }
-
-        function canonTowerClick() {
-        canAddTower = true;
-        towerSelected = "canonTower";
-        attackStat = 1;
-        speedStat = 20;
-        }
-        function plasmaTowerClick() {
-          canAddTower = true;
-          towerSelected = "plasmaTower";
-          attackStat = 2;
-          speedStat = 10;
-        }
-        function frostTowerClick() {
-          canAddTower = true;
-          towerSelected = "frostTower";
-          attackStat = 1;
-          speedStat = 10;
-        }
-
-         function upgradeTower() {
-           Tower.prototype.upgradeTower(clickedTower);
-        }
-
-        function render() {
-
-        }
-        function update() {
-          if(nextWaveTimer <= 0 ){
-            readyForWaveButton.tint = 0x566573;
-          }else{
-            readyForWaveButton.tint = 0xffffff;
-          }
-          /*
-          * Generate Enemy
-          */
-          enemys.forEach(function(enemy) {
-            if(!(enemy === undefined)) {
-              Enemy.prototype.moveElmt(enemy);
-            }
-          });
-
-          towers.forEach(function(tower) {
-            enemys.forEach(function(enemy) {
-              Tower.prototype.fire(tower, enemy);
-            })
-          });
-
-          game.physics.arcade.overlap(canons, enemys, collisionHandler, null, this);
-          game.physics.arcade.overlap(plasmas, enemys, collisionHandler, null, this);
-          game.physics.arcade.overlap(frosts, enemys, collisionHandler, null, this);
-
-          //Cash
-
-          bmpText.setText("Cash:" + cash);
-
-          nextWaveText.setText(nextWaveTimer);
-
-           healthText.setText("Health:" + playerHealth);
-
-           towerStatsText.setText("Tower:" +  towerSelected);
-
-           attackText.setText("Attack:" + attackStat);
-
-           speedText.setText("Speed:" + speedStat);
-
-           levelText.setText("Level:" + levelStat);
-
-           scoreText.setText("Score:" + score);
-
-           // select
-
-            towers.forEach(function(tower) {
-                 tower.inputEnabled = true;
-
-                if(tower.input.pointerDown()){
-                  tower.aplha = 0.5;
-
-                  clickedTower = tower;
-                  towerSelected = tower.type;
-                  levelStat = tower.level;
-                  attackStat = tower.bulletDamage;
-                  speedStat = Math.floor( (1 / tower.fireTime) * 10000);
-                  // if (tower.type === "meh") {
-                  //   speedStat = Math.floor( (1 / tower.fireTime) * 10000);
-                  //   towerSelected = "meh";
-                  //   levelStat = tower.level;
-                  //   clickedTower = tower;
-                  // } else if (tower.type == "bitchin"){
-                  //   speedStat = Math.floor( (1 / tower.fireTime) * 10000);
-                  //   towerSelected = "bitchin";
-                  //   levelStat = tower.level;
-                  //   clickedTower = tower;
-                  // } else if (tower.type == "ice"){
-                  //   speedStat = Math.floor( (1 / tower.fireTime) * 10000);
-                  //   towerSelected = "ice";
-                  //   levelStat = tower.level;
-                  //   clickedTower = tower;
-                  // }
-                }
-
-              });
-              if((enemys.length <= 0) && (nextWaveActive === false) && (nextWaveTimer <= 0)) {
-                waveActive = false
-                console.log('ran')
-                nextWaveActive = true;
-                nextWave();
-                nextWaveTimer = 15;
-                var nextWaveTimerActive = setInterval(function() {
-                  if(nextWaveTimer <= 0) {
-                    clearTimeout(nextWaveTimerActive);
-                  } else {
-                    nextWaveTimer -= 1;
-                  }
-                },1000)
-              }
-              if((enemys.length > 1) && nextWaveActive === true) {
-                nextWaveActive = false;
-                waveActive = true;
-              }
-        }
-        function listener(pointer) {
-
-
-          if (canAddTower) {
-              /*
-               * Add tower
-               */
-            if( towerSelected == "plasmaTower" && cash >= 25){
-              Tower.prototype.add(pointer);
-            }
-            else if( towerSelected == "canonTower" && cash >= 50){
-              Tower.prototype.add(pointer);
-            }
-            else if( towerSelected == "frostTower" && cash >= 50){
-              Tower.prototype.add(pointer);
-            }
-          }
-        }
-
-
-        function collisionHandler(bullet, enemy) {
-            Enemy.prototype.takeHit(enemy, bullet);
-            bullet.kill();
-        }
-
-        function setupEnemy (enemy) {
-
-          enemy.anchor.x = 0.5;
-          enemy.anchor.y = 0.5;
-          enemy.animations.add('kaboom');
-
-        }
-
-        function nextWave() {
-          uploadScore();
-
-          currentWave += 1;
-          waveTimer = setTimeout(function() {
-            generateEnemy(currentWave);
-          },15000)
-        }
-
-        function readyForWave() {
-          if(waveActive === false) {
-            clearTimeout(waveTimer);
-            generateEnemy(currentWave);
-            nextWaveTimer = 0;
-          }
-          // if(waveActive === false) {
-          //   currentWave += 1;
-          //   waveActive = true;
-          //   generateEnemy(currentWave);
-          // }
-        }
-        function generateEnemy(wave) {
-          waveActive = true;
-          var i = 0;
-          var enemysBcl = setInterval(function() {
-            if(i < (wave * 2)) {
-              var animEnemy = enemysAnimation[parseInt(Math.random() * enemysAnimation.length)];
-              new Enemy(path[0].x * tileSquare, path[0].y * tileSquare, animEnemy.name, wave);
-            } else {
-              nextWaveActive = false;
-              clearTimeout(enemysBcl);
-            }
-            i++;
-          }, 1000);
-        }
-
-        function takePlayerHit(enemy) {
-          enemy.kill();
-          enemy.destroy();
-          this.enemys.remove(enemy)
-          Tower.prototype.popEnemy(enemy);
-
-          playerHealth -= 1;
-
-        }
-
-        function findTopTen(scoresArray){
-
-          var topTen = [];
-
-          scoresArray.sort(function(a, b) {
-            return b[0] - a[0];
-          });
-
-          for(var i = 0; i < 11; i ++){
-            topTen.push(scoresArray[i]);
-          }
-          //topTen = [scoresArray[0], scoresArray[1], scoresArray[2]];
-
-          console.log(topTen);
-
-          return topTen;
-
-        }
-
-        function uploadScore(highScores){
-
-          var name = prompt("What is your name, young Kitten Defense champion!");
-
-          highScoreText = game.add.bitmapText(200, 200, 'desyrel', "High Score", 24);
-
-          var ref = firebase.database().ref('node-client');
-          var scoresRef = ref.child('scores');
-
-          scoresRef.push({
-            score: score,
-            name: name
-          });
-
-          var scores;
-
-          var scoresOutput;
-
-          var scoresArray = [];
-          var topTen = [];
-
-          ref.child('scores').on('value', function(snap){
-            scores = snap.val();
-            console.log(scores);
-            for (var key in scores) {
-              scoresArray.push([scores[key].score, scores[key].name] );
-
-            }
-
-            topTen = findTopTen(scoresArray);
-
-            for (var i = 0; i < topTen; i++) {
-
-            }
-
-            highScores = "\n" + topTen[0] + "\n" + topTen[1] + "\n" + topTen[2];
-
-            highScoreText.setText("High Scores:" + highScores);
-          })
-
-        }
-    </script>
+    console.log(topTen);
+
+    return topTen;
+
+  }
+
+  function uploadScore(highScores){
+
+    // var name = prompt("What is your name, young Kitten Defense champion!");
+
+    highScoreText = game.add.bitmapText(200, 200, 'desyrel', "High Score", 24);
+
+    var ref = firebase.database().ref('node-client');
+    var scoresRef = ref.child('scores');
+
+    scoresRef.push({
+      score: score,
+      name: name
+    });
+
+    var scores;
+
+    var scoresOutput;
+
+    var scoresArray = [];
+    var topTen = [];
+
+    ref.child('scores').on('value', function(snap){
+      scores = snap.val();
+      console.log(scores);
+      for (var key in scores) {
+        scoresArray.push([scores[key].score, scores[key].name] );
+
+      }
+
+      topTen = findTopTen(scoresArray);
+
+      for (var i = 0; i < topTen; i++) {
+
+      }
+
+      highScores = "\n" + topTen[0] + "\n" + topTen[1] + "\n" + topTen[2];
+
+      highScoreText.setText("High Scores:" + highScores);
+    })
+
+  }
+  </script>
 </html>
