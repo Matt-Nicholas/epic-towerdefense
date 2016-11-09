@@ -83,7 +83,7 @@ Tower.prototype.upgradeTower = function(clickedTower) {
       cash -= towerCash;
       clickedTower.level += 1;
       clickedTower.fireTime = clickedTower.fireTime * 0.75;
-      clickedTower.bulletDamage += 0.5;
+      clickedTower.bulletDamage = clickedTower.bulletDamage * 1.25;
       speedStat = Math.floor( (1 / clickedTower.fireTime) * 10000);
       attackStat = clickedTower.bulletDamage;
       levelStat = clickedTower.level;
@@ -92,7 +92,7 @@ Tower.prototype.upgradeTower = function(clickedTower) {
     else if(cash > (towerCash*2) && clickedTower.level == 2){
       cash -= (towerCash*2);
       clickedTower.level += 1;
-      clickedTower.bulletDamage += 0.5;
+      clickedTower.bulletDamage = clickedTower.bulletDamage * 1.25;
       clickedTower.fireTime = clickedTower.fireTime * 0.75;
 
       attackStat = clickedTower.bulletDamage;
@@ -126,7 +126,7 @@ Tower.prototype.fire = function(tower, enemy) {
         bullet.lifespan = tower.radius * 2;
         console.log(bullet)
       }
-      
+
         if (bullet && typeof tower.killZone[(tower.killZone.length - 1)] != "undefined") {
             bullet.reset(tower.x+17, tower.y+5, tower.bulletDamage);
             bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, tower.killZone[(tower.killZone.length - 1)].x, tower.killZone[(tower.killZone.length - 1)].y)) * 180 / Math.PI;

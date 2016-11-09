@@ -8,6 +8,7 @@
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/phaser/2.0.6/phaser.min.js"></script>
         <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script type="text/javascript" src="js/Enemy.class.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/3.6.0/firebase.js"></script>
         <style>
             *{
                 margin : 0;
@@ -19,6 +20,17 @@
       <h1>Schmower Defense</h1>
     </body>
     <script type="text/javascript">
+
+        //firebase stuff
+
+        var app = firebase.initializeApp({
+          apiKey: "AIzaSyColnTXdUlE1jERm6ph_b0GwF5QH8ofA0o",
+          authDomain: "kitten-defense.firebaseapp.com",
+          databaseURL: "https://kitten-defense.firebaseio.com",
+          storageBucket: "kitten-defense.appspot.com",
+          messagingSenderId: "509983097590"
+        });
+
         var game = new Phaser.Game(992, 640, Phaser.AUTO, 'gameContainer', {preload: preload, create: create, update: update, render: render});
         var tileSquare = 32;
         var playerHealth = 20;
@@ -49,8 +61,13 @@
         var attackText;
         var speedText;
         var levelText;
+        var highScoreText;
 
         var towerCash;
+
+        var highScores;
+
+        var score = 0;
 
         var clickedTower;
 
@@ -93,7 +110,7 @@
 
              game.load.spritesheet('plusSign', 'assets/sprites/plusSign.png', 32, 32);
 
-             game.load.spritesheet('kaboom','assets/sprites/explode.png',32,32,17)
+             game.load.spritesheet('kaboom','assets/sprites/explode.png',32,32,17);
 
         }
 
@@ -127,6 +144,12 @@
 
              attackText = game.add.bitmapText(800, 350, 'desyrel', 'Attack:', 24);
              speedText = game.add.bitmapText(800, 400, 'desyrel', 'Speed:', 24);
+
+             //highScoreText = game.add.bitmapText(500, 400, 'desyrel', 'HighScore:', 24);
+
+             scoreText = game.add.bitmapText(800, 450, 'desyrel', 'Score:', 24);
+
+             //highScoreText = game.add.bitmapText(200, 200, 'desyrel', "high scores", 24);
 
              levelText = game.add.bitmapText(800, 250, 'desyrel', 'Level:', 24);
 
@@ -236,6 +259,8 @@
 
            levelText.setText("Level:" + levelStat);
 
+           scoreText.setText("Score:" + score);
+
            // select
 
             towers.forEach(function(tower) {
@@ -295,7 +320,6 @@
         function collisionHandler(bullet, enemy) {
             Enemy.prototype.takeHit(enemy, bullet);
             bullet.kill();
-            console.log("hit")
         }
 
         function setupInvader (invader) {
@@ -307,6 +331,7 @@
         }
 
         function startWave() {
+          uploadScore();
           currentWave += 1;
           generateEnemy(currentWave);
         }
@@ -330,6 +355,68 @@
           Tower.prototype.popEnemy(enemy);
 
           playerHealth -= 1;
+
+        }
+
+        function findTopTen(scoresArray){
+
+          var topTen = [];
+
+          scoresArray.sort(function(a, b) {
+            return b[0] - a[0];
+          });
+
+          for(var i = 0; i < 11; i ++){
+            topTen.push(scoresArray[i]);
+          }
+          //topTen = [scoresArray[0], scoresArray[1], scoresArray[2]];
+
+          console.log(topTen);
+
+          return topTen;
+
+        }
+
+        function uploadScore(highScores){
+
+          var name = prompt("What is your name, young Kitten Defense champion!");
+
+          highScoreText = game.add.bitmapText(200, 200, 'desyrel', "High Score", 24);
+
+          var ref = firebase.database().ref('node-client');
+          var scoresRef = ref.child('scores');
+
+          scoresRef.push({
+            score: score,
+            name: name
+          });
+
+          var scores;
+
+          var scoresOutput;
+
+          var scoresArray = [];
+          var topTen = [];
+
+          ref.child('scores').on('value', function(snap){
+            scores = snap.val();
+            console.log(scores);
+            for (var key in scores) {
+              scoresArray.push([scores[key].score, scores[key].name] );
+
+            }
+
+            topTen = findTopTen(scoresArray);
+
+            for (var i = 0; i < topTen; i++) {
+
+            }
+
+            highScores = "\n" + topTen[0] + "\n" + topTen[1] + "\n" + topTen[2];
+
+            highScoreText.setText("High Scores:" + highScores);
+          })
+
         }
 
 

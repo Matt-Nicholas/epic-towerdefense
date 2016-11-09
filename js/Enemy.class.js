@@ -96,8 +96,6 @@ Enemy.prototype.takeHit = function(enemy, bullet) {
     enemy.hpBar = enemy.addChild(game.make.sprite(-15,-30,'healthBar'));
   }
 
-  console.log(bullet.key);
-
   if(bullet.key === "canon"){
     if(enemy.slowTimer === 0){
       enemy.recover = 0;
@@ -112,6 +110,9 @@ Enemy.prototype.takeHit = function(enemy, bullet) {
 
   if(enemy.health <= 0) {
     cash += 20;
+    score += 5;
+
+
     enemy.destroy();
     Tower.prototype.popEnemy(enemy);
     var explosion = explosions.getFirstExists(false);
