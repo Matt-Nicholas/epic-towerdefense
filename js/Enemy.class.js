@@ -9,7 +9,7 @@ var Enemy = function(x, y, anim, wave) {
     this.enemy.animations.add('walk-down',[0,15,30,0,15,30,0,15,30,26], 8, true);
     this.enemy.anchor.setTo(0.5, 0.5)
     this.enemy.speed = 1.1;
-    this.enemy.health = 8;
+    this.enemy.health = ((base + 12)*(wave/10));
     this.enemy.speedX = 0;
     this.enemy.speedY = 0;
     this.enemy.curTile = 0;
@@ -21,15 +21,16 @@ var Enemy = function(x, y, anim, wave) {
     this.enemy.animations.add('walk-down',[0,1,2], 10, true);
     this.enemy.animations.add('walk-up',[9,10,11], 10, true);
     this.enemy.anchor.setTo(0.5, 0.5)
-    if(anim === "rat"){this.enemy.speed = 1.1;this.enemy.health = 8 * (1 + (wave)/10);}
-    if(anim === "blackCat"){this.enemy.speed = 1;this.enemy.health = 10 * (1 + (wave)/10);}
-    if(anim === "brownDog"){this.enemy.speed = 0.8;this.enemy.health = 12 * (1 + (wave)/10);}
+    if(anim === "rat"){this.enemy.speed = 1.1;this.enemy.health = (base + 3) * (1 + (wave)/10);}
+    if(anim === "blackCat"){this.enemy.speed = 1;this.enemy.health = (base + 7) * (1 + (wave)/10);}
+    if(anim === "brownDog"){this.enemy.speed = 0.8;this.enemy.health = (base + 9) * (1 + (wave)/10);}
     this.enemy.speedX = 0;
     this.enemy.speedY = 0;
     this.enemy.curTile = 0;
     this.enemy.firsthit = 0;
     this.enemy.slowTimer = false;
   }
+  console.log(this.enemy.health)
   enemys.add(this.enemy);
   enemys.setAll('checkWorldBounds', true);
   enemys.setAll('outOfBoundsKill', true);

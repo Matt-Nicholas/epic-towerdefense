@@ -82,7 +82,6 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
 }
 
 Tower.prototype.add = function(pointer) {
-  console.log('here')
   if(canAddTower) {
     Tower.prototype.posit(pointer)
     canAddTower = false;
