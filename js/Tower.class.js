@@ -14,32 +14,32 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
       tileForbiden.push(index);
 
 
-      if(towerSelected === 'bitchin') {
+      if(towerSelected === "canonTower") {
         this.tower.fireTime = 500;
         this.tower.radius = 100;
         this.tower.level = 1;
-        this.tower.type = "bitchin";
+        this.tower.type = "canon";
         cash -= 50;
         this.tower.ammunition = "canon";
         this.tower.bulletDamage = 1;
         towers.add(this.tower);
       }
-      else if(towerSelected === 'ice') {
-        this.tower.fireTime = 1000;
+      else if(towerSelected === 'frostTower') {
+        this.tower.fireTime = 10;
         this.tower.radius = 100;
         this.tower.level = 1;
-        this.tower.type = "ice";
+        this.tower.type = "frostTower";
         cash -= 150;
         this.tower.ammunition = "frost";
-        this.tower.bulletDamage = 1;
+        this.tower.bulletDamage = 0;
         towers.add(this.tower);
-      } else {
+      } else if(towerSelected === 'plasmaTower'){
         this.tower = game.add.sprite(worldX, worldY, tile);
         this.tower.fireTime = 10;
         this.tower.radius = 200;
         cash -= 25;
         this.tower.level = 1;
-        this.tower.type = "meh";
+        this.tower.type = "plasmaTower";
         this.tower.ammunition = "plasma";
         this.tower.bulletDamage = .02;
         towers.add(this.tower);
@@ -64,19 +64,18 @@ Tower.prototype.levelTwo = function(tower) {
 }
 
 Tower.prototype.levelThree = function(tower) {
-  console.log(tower);
    tower.animations.add('levelThree',[2], false);
    tower.animations.play('levelThree');
 }
 
 Tower.prototype.upgradeTower = function(clickedTower) {
-  if(towerSelected == 'meh'){
+  if(towerSelected == 'plasmaTower'){
     towerCash = 100;
   }
-  else if(towerSelected == 'bitchin'){
+  else if(towerSelected == 'canonTower'){
     towerCash = 150;
   }
-  else if(towerSelected == 'ice'){
+  else if(towerSelected == 'frostTower'){
     towerCash = 200;
   }
     if(cash > towerCash && clickedTower.level == 1){
@@ -118,21 +117,28 @@ Tower.prototype.fire = function(tower, enemy) {
     }
     if (game.time.now > tower.fireLastTime) {
       var bullet;
-      if(tower.type === "bitchin") {
+      if(tower.type === "canonTower") {
        bullet = canons.getFirstExists(false);
        bullet.lifespan = tower.radius * 2;
-      } else {
+     } else if(tower.type === "plasmaTower"){
         bullet = plasmas.getFirstExists(false);
         bullet.lifespan = tower.radius * 2;
-        console.log(bullet)
+      } else if(tower.type === "frostTower") {
+        bullet = frosts.getFirstExists(false);
+        bullet.lifespan = tower.radius * 2;
+      } else if(tower.type === "fireTower") {
+        bullet = fires.getFirstExists(false);
+        bullet.lifespan = tower.radius * 2;
+      } else if(tower.type === "archerTower") {
+        bullet = arrows.getFirstExists(false);
+        bullet.lifespan = tower.radius * 2;
       }
-      
-        if (bullet && typeof tower.killZone[(tower.killZone.length - 1)] != "undefined") {
-            bullet.reset(tower.x+17, tower.y+5, tower.bulletDamage);
-            bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, tower.killZone[(tower.killZone.length - 1)].x, tower.killZone[(tower.killZone.length - 1)].y)) * 180 / Math.PI;
-            game.physics.arcade.moveToObject(bullet, tower.killZone[(tower.killZone.length - 1)], 500);
-        }
-        tower.fireLastTime = game.time.now + tower.fireTime;
+      if (bullet && typeof tower.killZone[(tower.killZone.length - 1)] != "undefined") {
+          bullet.reset(tower.x+17, tower.y+5, tower.bulletDamage);
+          bullet.rotation = parseFloat(game.physics.arcade.angleToXY(bullet, tower.killZone[(tower.killZone.length - 1)].x, tower.killZone[(tower.killZone.length - 1)].y)) * 180 / Math.PI;
+          game.physics.arcade.moveToObject(bullet, tower.killZone[(tower.killZone.length - 1)], 500);
+      }
+      tower.fireLastTime = game.time.now + tower.fireTime;
     }
   } else if (((game.math.distance(tower.x, tower.y, enemy.x, enemy.y)) > tower.radius) && tower.killZone.includes(enemy)) {
     tower.killZone.pop();
