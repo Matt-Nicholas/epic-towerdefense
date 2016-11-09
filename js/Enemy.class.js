@@ -77,6 +77,7 @@ Enemy.prototype.takeHit = function(enemy, bullet) {
   if(enemy.firsthit === 0){
     enemy.hpBar = enemy.addChild(game.make.sprite(-15,-30,'healthBar'));
   }
+
   if((bullet.key === "frost") && (enemy.slowTimer === false)){
     enemy.slowTimer = true;
     enemy.speed = enemy.speed/2;
@@ -90,6 +91,9 @@ Enemy.prototype.takeHit = function(enemy, bullet) {
 
   if(enemy.health <= 0) {
     cash += 20;
+    score += 5;
+
+
     enemy.destroy();
     Tower.prototype.popEnemy(enemy);
     var explosion = explosions.getFirstExists(false);
