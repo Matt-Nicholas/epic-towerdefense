@@ -39,9 +39,12 @@
         var path = [{x: 0, y: 3},{x: 1, y: 3},{x: 2, y: 3},{x:3, y:3},{x:4, y:3},{x:5, y:3},{x:6, y:3},{x:7, y:3},{x:8, y:3},{x:9, y:3},{x:10, y:3},{x:10, y:4},{x:10, y:5},{x:10, y:6},{x:11, y:6},{x:12, y:6},{x:13, y:6},{x:14, y:6},{x:15, y:6},{x:15, y:5},{x:15, y:4},{x:15, y:3},{x:16, y:3},{x:17, y:3},{x:18, y:3},{x:19, y:3},{x:20, y:3},{x:21, y:3},{x:22, y:3},{x:23, y:3},{x:23, y:4},{x:23, y:5},{x:23, y:6},{x:23, y:7},{x:23, y:8},{x:23, y:9},{x:23, y:10},{x:23, y:11},{x:22, y:11},{x:21, y:11},{x:20, y:11},{x:19, y:11},{x:18, y:11},{x:17, y:11},{x:16, y:11},{x:15, y:11},{x:14, y:11},{x:14, y:12},{x:13, y:12},{x:12, y:12},{x:11, y:12},{x:10, y:12},{x:9, y:12},{x:8, y:12},{x:8, y:11},{x:8, y:10},{x:8, y:9},{x:8, y:8},{x:7, y:8},{x:6, y:8},{x:5, y:8},{x:4, y:8},{x:3, y:8},{x:3, y:9},{x:3, y:10},{x:3, y:11},{x:3, y:12},{x:3, y:13},{x:3, y:14},{x:3, y:15},{x:4, y:15},{x:5, y:15},{x:6, y:15},{x:7, y:15},{x:8, y:15},{x:9, y:15},{x:10, y:15},{x:11, y:15},{x:12, y:15},{x:12, y:16},{x:12, y:17},{x:12, y:18},{x:12, y:19},{x:12, y:20}];
 
         var waveActive = false;
+        var nextWaveActive = false;
         var currentWave = 0;
         var towers = [];
         var canAddTower = true;
+        var nextWaveTimer = 0;
+        var waveTimer;
 
         var button;
         var button2;
@@ -57,6 +60,7 @@
 
 
         var bmpText;
+        var nextWaveText;
         var towerStatsText;
         var attackText;
         var speedText;
@@ -73,7 +77,7 @@
 
         var barConfig = {x: 200, y: 100};
 
-        var towerSelected = "bitchin";
+        var towerSelected;
 
         var enemysAnimation = [{'name': 'blackCat','length': 12},{'name': 'rat','length': 12},{'name': 'brownDog','length': 12}];
 
@@ -87,15 +91,16 @@
 
             game.load.image('healthBar', 'assets/images/healthBar.png');
 
-            game.load.spritesheet('meh', 'assets/sprites/testTower.png',32,32,3);
-            game.load.image('bitchin', 'assets/sprites/tower1-32.png');
+            game.load.spritesheet('plasmaTower', 'assets/sprites/testTower.png',32,32,3);
+            game.load.image('canonTower', 'assets/sprites/tower1-32.png');
 
             game.load.spritesheet('plasma', 'assets/sprites/plasmas.png', 16, 16, 12);
 
-            game.load.spritesheet('ice', 'assets/sprites/iceTower.png',32,32,1);
+            game.load.spritesheet('frostTower', 'assets/sprites/iceTower.png',32,32,1);
 
 
             game.load.image('canon', 'assets/sprites/tower1-32.png');
+            game.load.image('frost', 'assets/images/frost.png',32,32);
 
             /*
              * Enemy Preload
@@ -109,6 +114,7 @@
              game.load.spritesheet('button', 'assets/sprites/tower1.png', 48, 71, 1);
 
              game.load.spritesheet('plusSign', 'assets/sprites/plusSign.png', 32, 32);
+             game.load.spritesheet('startButton', 'assets/sprites/start.png', 128, 128);
 
              game.load.spritesheet('kaboom','assets/sprites/explode.png',32,32,17);
 
@@ -138,6 +144,7 @@
              */
 
              bmpText = game.add.bitmapText(800, 500, 'desyrel', 'Cash:', 24);
+             nextWaveText = game.add.bitmapText(890, 606, 'desyrel',"" ,24);
              healthText = game.add.bitmapText(800, 550, 'desyrel', 'Health:', 24);
 
              towerStatsText = game.add.bitmapText(800, 300, 'desyrel', 'Tower:', 24);
@@ -153,11 +160,11 @@
 
              levelText = game.add.bitmapText(800, 250, 'desyrel', 'Level:', 24);
 
-             button = game.add.button(810, 10, 'button', bitchinTowerClick);
-             button2 = game.add.button(810, 81, 'button2', mehTowerClick);
-             button3 = game.add.button(810, 140, 'button3', iceTowerClick);
+             button = game.add.button(810, 10, 'button', canonTowerClick);
+             button2 = game.add.button(810, 81, 'button2', plasmaTowerClick);
+             button3 = game.add.button(810, 140, 'button3', frostTowerClick);
 
-             startWave = game.add.button(800, 575, 'plusSign', startWave);
+             readyForWaveButton = game.add.button(800, 560, 'startButton', readyForWave);
              increment = game.add.button(900, 250, 'plusSign', upgradeTower);
 
              plasmas = game.add.group();
@@ -167,6 +174,10 @@
              canons = game.add.group();
              canons.enableBody = true;
              canons.physicsBodyType = Phaser.Physics.ARCADE;
+
+             frosts = game.add.group();
+             frosts.enableBody = true;
+             frosts.physicsBodyType = Phaser.Physics.ARCADE;
             /*
             *Creates Bullet Pools for Tower Types
             */
@@ -182,6 +193,12 @@
             canons.setAll('outOfBoundsKill', true);
             canons.setAll('checkWorldBounds', true);
 
+            frosts.createMultiple(1000, 'frost');
+            frosts.setAll('anchor.x', 0.5);
+            frosts.setAll('anchor.y', 0.6);
+            frosts.setAll('outOfBoundsKill', true);
+            frosts.setAll('checkWorldBounds', true);
+
             /*
              * Enemy
              */
@@ -193,28 +210,28 @@
 
              explosions = game.add.group();
              explosions.createMultiple(30, 'kaboom');
-             explosions.forEach(setupInvader, this);
+             explosions.forEach(setupEnemy, this);
 
              game.input.onDown.add(listener, this);
 
 
         }
 
-        function bitchinTowerClick() {
+        function canonTowerClick() {
         canAddTower = true;
-        towerSelected = "bitchin";
+        towerSelected = "canonTower";
         attackStat = 1;
         speedStat = 20;
         }
-        function mehTowerClick() {
+        function plasmaTowerClick() {
           canAddTower = true;
-          towerSelected = "meh";
+          towerSelected = "plasmaTower";
           attackStat = 2;
           speedStat = 10;
         }
-        function iceTowerClick() {
+        function frostTowerClick() {
           canAddTower = true;
-          towerSelected = "ice";
+          towerSelected = "frostTower";
           attackStat = 1;
           speedStat = 10;
         }
@@ -227,6 +244,11 @@
 
         }
         function update() {
+          if(nextWaveTimer <= 0 ){
+            readyForWaveButton.tint = 0x566573;
+          }else{
+            readyForWaveButton.tint = 0xffffff;
+          }
           /*
           * Generate Enemy
           */
@@ -244,10 +266,13 @@
 
           game.physics.arcade.overlap(canons, enemys, collisionHandler, null, this);
           game.physics.arcade.overlap(plasmas, enemys, collisionHandler, null, this);
+          game.physics.arcade.overlap(frosts, enemys, collisionHandler, null, this);
 
           //Cash
 
-           bmpText.setText("Cash:" + cash);
+          bmpText.setText("Cash:" + cash);
+
+          nextWaveText.setText(nextWaveTimer);
 
            healthText.setText("Health:" + playerHealth);
 
@@ -274,7 +299,6 @@
                   levelStat = tower.level;
                   attackStat = tower.bulletDamage;
                   speedStat = Math.floor( (1 / tower.fireTime) * 10000);
-
                   // if (tower.type === "meh") {
                   //   speedStat = Math.floor( (1 / tower.fireTime) * 10000);
                   //   towerSelected = "meh";
@@ -294,7 +318,24 @@
                 }
 
               });
-
+              if((enemys.length <= 0) && (nextWaveActive === false) && (nextWaveTimer <= 0)) {
+                waveActive = false
+                console.log('ran')
+                nextWaveActive = true;
+                nextWave();
+                nextWaveTimer = 15;
+                var nextWaveTimerActive = setInterval(function() {
+                  if(nextWaveTimer <= 0) {
+                    clearTimeout(nextWaveTimerActive);
+                  } else {
+                    nextWaveTimer -= 1;
+                  }
+                },1000)
+              }
+              if((enemys.length > 1) && nextWaveActive === true) {
+                nextWaveActive = false;
+                waveActive = true;
+              }
         }
         function listener(pointer) {
 
@@ -303,16 +344,15 @@
               /*
                * Add tower
                */
-
-                  if( towerSelected == "meh" && cash >= 25){
-                    Tower.prototype.add(pointer);
-                  }
-                  else if( towerSelected == "bitchin" && cash >= 50){
-                    Tower.prototype.add(pointer);
-                  }
-                  else if( towerSelected == "ice" && cash >= 50){
-                    Tower.prototype.add(pointer);
-                  }
+            if( towerSelected == "plasmaTower" && cash >= 25){
+              Tower.prototype.add(pointer);
+            }
+            else if( towerSelected == "canonTower" && cash >= 50){
+              Tower.prototype.add(pointer);
+            }
+            else if( towerSelected == "frostTower" && cash >= 50){
+              Tower.prototype.add(pointer);
+            }
           }
         }
 
@@ -322,26 +362,44 @@
             bullet.kill();
         }
 
-        function setupInvader (invader) {
+        function setupEnemy (enemy) {
 
-          invader.anchor.x = 0.5;
-          invader.anchor.y = 0.5;
-          invader.animations.add('kaboom');
+          enemy.anchor.x = 0.5;
+          enemy.anchor.y = 0.5;
+          enemy.animations.add('kaboom');
 
         }
 
-        function startWave() {
+        function nextWave() {
           uploadScore();
+
           currentWave += 1;
-          generateEnemy(currentWave);
+          waveTimer = setTimeout(function() {
+            generateEnemy(currentWave);
+          },15000)
+        }
+
+        function readyForWave() {
+          if(waveActive === false) {
+            clearTimeout(waveTimer);
+            generateEnemy(currentWave);
+            nextWaveTimer = 0;
+          }
+          // if(waveActive === false) {
+          //   currentWave += 1;
+          //   waveActive = true;
+          //   generateEnemy(currentWave);
+          // }
         }
         function generateEnemy(wave) {
+          waveActive = true;
           var i = 0;
           var enemysBcl = setInterval(function() {
-            if(i < (2)) {
+            if(i < (wave * 2)) {
               var animEnemy = enemysAnimation[parseInt(Math.random() * enemysAnimation.length)];
               new Enemy(path[0].x * tileSquare, path[0].y * tileSquare, animEnemy.name, wave);
             } else {
+              nextWaveActive = false;
               clearTimeout(enemysBcl);
             }
             i++;
@@ -418,8 +476,5 @@
           })
 
         }
-
-
-
     </script>
 </html>
