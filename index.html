@@ -66,8 +66,8 @@
   var score = 0;
   var clickedTower;
   var barConfig = {x: 200, y: 100};
-  var towerSelected;
   var enemysAnimation = [{'name': 'blackCat','length': 12},{'name': 'rat','length': 12},{'name': 'brownDog','length': 12}];
+  var towerSelected = "None";
 
 
   function preload() {
@@ -110,7 +110,7 @@
     /*
     * Button Preload
     */
-    game.load.spritesheet('button3', 'assets/sprites/iceTower.png', 32,32,1);
+    game.load.spritesheet('button3', 'assets/images/iceButton.png', 64,64,1);
     game.load.spritesheet('button5', 'assets/sprites/plasmaTowers.png', 32,32,1);
     game.load.spritesheet('button4', 'assets/images/barad-dur-button.png', 64,64,1);
     game.load.spritesheet('button2', 'assets/sprites/archerTowers.png', 32, 32,4);
@@ -142,9 +142,10 @@
 
     //Tower Range
     graphics = game.add.graphics(0, 0);
-    graphics.beginFill(0xFFFF0B, 0.5);
+    // graphics.beginFill(0xD3D3D3, 0.1);
+    graphics.lineStyle(1, 0x0000FF, 0.2);
     circle = graphics.drawCircle(0,0,1);
-    graphics.endFill();
+    // graphics.endFill();
     /*
     * Info Panel
     */
@@ -152,7 +153,7 @@
     nextWaveText = game.add.bitmapText(770, 645, 'desyrel',"" ,24);
     healthText = game.add.bitmapText(500, 650, 'desyrel', 'Health:', 24);
     towerStatsText = game.add.bitmapText(800, 300, 'desyrel', 'Tower:', 24);
-    attackText = game.add.bitmapText(800, 350, 'desyrel', 'Attack:', 24);
+    attackText = game.add.bitmapText(800, 350, 'desyrel', 'DPS:', 24);
     speedText = game.add.bitmapText(800, 400, 'desyrel', 'Speed:', 24);
     //highScoreText = game.add.bitmapText(500, 400, 'desyrel', 'HighScore:', 24);
     scoreText = game.add.bitmapText(50, 650, 'desyrel', 'Score:', 24);
@@ -249,30 +250,35 @@
     towerSelected = "cannonTower";
     attackStat = 1;
     speedStat = 20;
+    levelStat = 1;
   }
   function plasmaTowerClick() {
     canAddTower = true;
     towerSelected = "plasmaTower";
     attackStat = 2;
     speedStat = 10;
+    levelStat = 1;
   }
   function archerTowerClick() {
     canAddTower = true;
     towerSelected = "archerTower";
     attackStat = 2;
     speedStat = 10;
+    levelStat = 1;
   }
   function frostTowerClick() {
     canAddTower = true;
     towerSelected = "frostTower";
     attackStat = 1;
     speedStat = 10;
+    levelStat = 1;
   }
   function flameTowerClick() {
     canAddTower = true;
     towerSelected = "flameTower";
     attackStat = 1;
     speedStat = 10;
+    levelStat = 1;
   }
 
   function upgradeTower() {
@@ -283,6 +289,7 @@
 
   }
   function update() {
+
     if(nextWaveTimer <= 0 ){
       readyForWaveButton.tint = 0x566573;
     }else{
@@ -319,7 +326,7 @@
 
     towerStatsText.setText("Tower:" +  towerSelected);
 
-    attackText.setText("Attack:" + attackStat);
+    attackText.setText("DPS:" + attackStat);
 
     speedText.setText("Speed:" + speedStat);
 
@@ -335,30 +342,20 @@
       if(tower.input.pointerDown()){
         tower.aplha = 0.5;
 
+        if(tower.level === 3){
+          increment.visible = false;
+        } else{
+          increment.visible = true;
+        }
         circle.x = tower.x + 15;
         circle.y = tower.y + 15;
         circle.scale.setTo((tower.radius), (tower.radius));
         clickedTower = tower;
         towerSelected = tower.type;
         levelStat = tower.level;
-        attackStat = tower.bulletDamage;
         speedStat = Math.floor( (1 / tower.fireTime) * 10000);
-        // if (tower.type === "meh") {
-        //   speedStat = Math.floor( (1 / tower.fireTime) * 10000);
-        //   towerSelected = "meh";
-        //   levelStat = tower.level;
-        //   clickedTower = tower;
-        // } else if (tower.type == "bitchin"){
-        //   speedStat = Math.floor( (1 / tower.fireTime) * 10000);
-        //   towerSelected = "bitchin";
-        //   levelStat = tower.level;
-        //   clickedTower = tower;
-        // } else if (tower.type == "ice"){
-        //   speedStat = Math.floor( (1 / tower.fireTime) * 10000);
-        //   towerSelected = "ice";
-        //   levelStat = tower.level;
-        //   clickedTower = tower;
-        // }
+        attackStat = Math.round( (clickedTower.bulletDamage * speedStat) );
+
       }
 
     });

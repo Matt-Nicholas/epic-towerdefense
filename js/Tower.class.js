@@ -84,6 +84,7 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
 Tower.prototype.add = function(pointer) {
   if(canAddTower) {
     Tower.prototype.posit(pointer)
+    canAddTower = false;
   }
 
 }
@@ -94,6 +95,7 @@ Tower.prototype.levelTwo = function(tower) {
 }
 
 Tower.prototype.levelThree = function(tower) {
+   increment.visible = false;
    tower.animations.play('levelThree');
 }
 
@@ -120,7 +122,8 @@ Tower.prototype.upgradeTower = function(clickedTower) {
       clickedTower.fireTime = clickedTower.fireTime * 0.75;
       clickedTower.bulletDamage = clickedTower.bulletDamage * 1.25;
       speedStat = Math.floor( (1 / clickedTower.fireTime) * 10000);
-      attackStat = clickedTower.bulletDamage;
+      attackStat = Math.round( (clickedTower.bulletDamage * speedStat) );
+
       levelStat = clickedTower.level;
       Tower.prototype.levelTwo(clickedTower);
     }
@@ -130,8 +133,8 @@ Tower.prototype.upgradeTower = function(clickedTower) {
       clickedTower.bulletDamage = clickedTower.bulletDamage * 1.25;
       clickedTower.fireTime = clickedTower.fireTime * 0.75;
 
-      attackStat = clickedTower.bulletDamage;
       speedStat = Math.floor((1 / clickedTower.fireTime) * 10000);
+      attackStat = Math.round( (clickedTower.bulletDamage * speedStat) );
       levelStat = clickedTower.level;
       Tower.prototype.levelThree(clickedTower);
     }
