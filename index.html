@@ -67,7 +67,8 @@
   var clickedTower;
   var barConfig = {x: 200, y: 100};
   var towerSelected;
-  var enemysAnimation = [{'name': 'blackCat','length': 12},{'name': 'rat','length': 12},{'name': 'brownDog','length': 12}];
+  // var enemysAnimation = [{'name': 'blackCat','length': 12},{'name': 'rat','length': 12},{'name': 'brownDog','length': 12}];
+  var enemysAnimation = [{'name': 'chain','length': 60}];
 
 
   function preload() {
@@ -81,18 +82,19 @@
     * Tower Preload
     */
     game.load.spritesheet('plasmaTower', 'assets/sprites/plasmaTowers.png',32,32,3);
-    game.load.image('canonTower', 'assets/sprites/tower1-32.png');
+    game.load.spritesheet('cannonTower', 'assets/sprites/cannonTowers.png',32,32,20);
     game.load.spritesheet('frostTower', 'assets/sprites/iceTower.png',32,32,1);
     game.load.spritesheet('archerTower', 'assets/sprites/archerTowers.png',32,32,4);
     game.load.spritesheet('flameTower', 'assets/sprites/barad-dur.png',32,32,22);
     // explosion
     game.load.spritesheet('kaboom','assets/sprites/explode.png',32,32,17);
+    game.load.spritesheet('smoke','assets/sprites/smoke.png',32,32,4);
 
 
     /*
     * Ammo Preload
     */
-    game.load.image('canon', 'assets/sprites/arrow.png');
+    game.load.image('cannon', 'assets/sprites/cannonBall.png');
     game.load.image('frost', 'assets/sprites/frost.png',32,32);
     game.load.spritesheet('plasma', 'assets/sprites/plasmas.png', 16, 16, 12);
     game.load.image('flame', 'assets/images/flame.png', 32, 24, 12);
@@ -104,6 +106,7 @@
     game.load.spritesheet('blackCat', 'assets/sprites/blackCat.png', 32, 32);
     game.load.spritesheet('rat', 'assets/sprites/rat.png', 32, 32);
     game.load.spritesheet('brownDog', 'assets/sprites/brownDog.png', 32, 32);
+    game.load.spritesheet('chain', 'assets/sprites/chaingang.png', 32, 32, 60);
 
     /*
     * Button Preload
@@ -112,7 +115,7 @@
     game.load.spritesheet('button5', 'assets/sprites/plasmaTowers.png', 32,32,1);
     game.load.spritesheet('button4', 'assets/images/barad-dur-button.png', 64,64,1);
     game.load.spritesheet('button2', 'assets/sprites/archerTowers.png', 32, 32,4);
-    game.load.spritesheet('button', 'assets/sprites/tower1.png', 48, 71, 1);
+    game.load.spritesheet('button', 'assets/sprites/cannonTowerButton.png', 64, 64, 1);
 
     game.load.spritesheet('plusSign', 'assets/sprites/plusSign.png', 32, 32);
     game.load.spritesheet('startButton', 'assets/sprites/start.png', 128, 128);
@@ -153,7 +156,7 @@
     levelText = game.add.bitmapText(800, 250, 'desyrel', 'Level:', 24);
 
     // BUTTONS
-    button = game.add.button(810, 10, 'button', canonTowerClick);
+    button = game.add.button(810, 10, 'button', cannonTowerClick);
     button2 = game.add.button(810, 81, 'button2', archerTowerClick);
     button3 = game.add.button(810, 140, 'button3', frostTowerClick);
     button4 = game.add.button(870, 10, 'button4', flameTowerClick);
@@ -167,9 +170,9 @@
     plasmas.enableBody = true;
     plasmas.physicsBodyType = Phaser.Physics.ARCADE;
 
-    canons = game.add.group();
-    canons.enableBody = true;
-    canons.physicsBodyType = Phaser.Physics.ARCADE;
+    cannons = game.add.group();
+    cannons.enableBody = true;
+    cannons.physicsBodyType = Phaser.Physics.ARCADE;
 
     frosts = game.add.group();
     frosts.enableBody = true;
@@ -191,11 +194,11 @@
     plasmas.setAll('outOfBoundsKill', true);
     plasmas.setAll('checkWorldBounds', true);
 
-    canons.createMultiple(30, 'canon');
-    canons.setAll('anchor.x', 0.5);
-    canons.setAll('anchor.y', 1);
-    canons.setAll('outOfBoundsKill', true);
-    canons.setAll('checkWorldBounds', true);
+    cannons.createMultiple(30, 'cannon');
+    cannons.setAll('anchor.x', 0.5);
+    cannons.setAll('anchor.y', 1);
+    cannons.setAll('outOfBoundsKill', true);
+    cannons.setAll('checkWorldBounds', true);
 
     frosts.createMultiple(1000, 'frost');
     frosts.setAll('anchor.x', 0.5);
@@ -228,14 +231,18 @@
     explosions.createMultiple(30, 'kaboom');
     explosions.forEach(setupEnemy, this);
 
+    smokes = game.add.group();
+    smokes.createMultiple(30, 'smoke');
+    smokes.forEach(setupCannon, this);
+
     game.input.onDown.add(listener, this);
 
 
   }
 
-  function canonTowerClick() {
+  function cannonTowerClick() {
     canAddTower = true;
-    towerSelected = "canonTower";
+    towerSelected = "cannonTower";
     attackStat = 1;
     speedStat = 20;
   }
@@ -292,7 +299,7 @@
       })
     });
 
-    game.physics.arcade.overlap(canons, enemys, collisionHandler, null, this);
+    game.physics.arcade.overlap(cannons, enemys, collisionHandler, null, this);
     game.physics.arcade.overlap(plasmas, enemys, collisionHandler, null, this);
     game.physics.arcade.overlap(frosts, enemys, collisionHandler, null, this);
     game.physics.arcade.overlap(arrows, enemys, collisionHandler, null, this);
@@ -377,7 +384,7 @@
       if( towerSelected == "plasmaTower" && cash >= 25){
         Tower.prototype.add(pointer);
       }
-      else if( towerSelected == "canonTower" && cash >= 50){
+      else if( towerSelected == "cannonTower" && cash >= 50){
         Tower.prototype.add(pointer);
       }
       else if( towerSelected == "frostTower" && cash >= 50){
@@ -397,7 +404,13 @@
 
     if((bullet.key === 'flame') || (bullet.key === 'frost')) {
       Enemy.prototype.takeHit(enemy, bullet);
-    } else {
+    } else if(bullet.key === "cannon"){
+      bullet.kill();
+      var smoke = smokes.getFirstExists(false);
+      smoke.reset(enemy.x, enemy.y);
+      smoke.play('smoke', 10, false, true);
+      Enemy.prototype.takeHit(enemy, bullet);
+    }else {
       bullet.kill();
       Enemy.prototype.takeHit(enemy, bullet);
     }
@@ -408,6 +421,14 @@
     enemy.anchor.x = 0.5;
     enemy.anchor.y = 0.5;
     enemy.animations.add('kaboom');
+
+  }
+
+  function setupCannon (enemy) {
+
+    enemy.anchor.x = 0.5;
+    enemy.anchor.y = 0.5;
+    enemy.animations.add('smoke');
 
   }
 

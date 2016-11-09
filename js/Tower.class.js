@@ -14,15 +14,19 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
       tileForbiden.push(index);
 
 
-      if(towerSelected === "canonTower") {
+      if(towerSelected === "cannonTower") {
+        this.tower.animations.add("levelOne", [0,1,2,3,4], 5, true);
+        this.tower.animations.add("levelTwo", [6,7,8,9,10,11], 5, true);
+        this.tower.animations.add("levelThree", [13,14,15,16,17,18], 5, true);
         this.tower.fireTime = 500;
         this.tower.radius = 100;
         this.tower.level = 1;
-        this.tower.type = "canon";
+        this.tower.type = "cannonTower";
         cash -= 50;
-        this.tower.ammunition = "canon";
+        this.tower.ammunition = "cannon";
         this.tower.bulletDamage = 1;
         towers.add(this.tower);
+        this.tower.animations.play("levelOne");
       }
       else if(towerSelected === 'frostTower') {
         this.tower.fireTime = 10;
@@ -95,10 +99,11 @@ Tower.prototype.levelThree = function(tower) {
 }
 
 Tower.prototype.upgradeTower = function(clickedTower) {
+  console.log(clickedTower)
   if(towerSelected == 'plasmaTower'){
     towerCash = 100;
   }
-  else if(towerSelected == 'canonTower'){
+  else if(towerSelected == 'cannonTower'){
     towerCash = 150;
   }
   else if(towerSelected == 'frostTower'){
@@ -149,8 +154,8 @@ Tower.prototype.fire = function(tower, enemy) {
     }
     if (game.time.now > tower.fireLastTime) {
       var bullet;
-      if(tower.type === "canonTower") {
-       bullet = canons.getFirstExists(false);
+      if(tower.type === "cannonTower") {
+       bullet = cannons.getFirstExists(false);
        bullet.lifespan = tower.radius * 2;
      } else if(tower.type === "plasmaTower"){
         bullet = plasmas.getFirstExists(false);
