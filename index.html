@@ -31,6 +31,8 @@
         var currentWave = 0;
         var towers = [];
         var canAddTower = true;
+        var nextWaveTimer = 0;
+        var waveTimer;
 
         var button;
         var button2;
@@ -46,6 +48,7 @@
 
 
         var bmpText;
+        var nextWaveText;
         var towerStatsText;
         var attackText;
         var speedText;
@@ -94,6 +97,7 @@
              game.load.spritesheet('button', 'assets/sprites/tower1.png', 48, 71, 1);
 
              game.load.spritesheet('plusSign', 'assets/sprites/plusSign.png', 32, 32);
+             game.load.spritesheet('startButton', 'assets/sprites/start.png', 128, 128);
 
              game.load.spritesheet('kaboom','assets/sprites/explode.png',32,32,17)
 
@@ -123,6 +127,7 @@
              */
 
              bmpText = game.add.bitmapText(800, 500, 'desyrel', 'Cash:', 24);
+             nextWaveText = game.add.bitmapText(890, 606, 'desyrel',"" ,24);
              healthText = game.add.bitmapText(800, 550, 'desyrel', 'Health:', 24);
 
              towerStatsText = game.add.bitmapText(800, 300, 'desyrel', 'Tower:', 24);
@@ -136,7 +141,7 @@
              button2 = game.add.button(810, 81, 'button2', plasmaTowerClick);
              button3 = game.add.button(810, 140, 'button3', frostTowerClick);
 
-             startWave = game.add.button(800, 575, 'plusSign', nextWave);
+             readyForWaveButton = game.add.button(800, 560, 'startButton', readyForWave);
              increment = game.add.button(900, 250, 'plusSign', upgradeTower);
 
              plasmas = game.add.group();
@@ -216,6 +221,11 @@
 
         }
         function update() {
+          if(nextWaveTimer <= 0 ){
+            readyForWaveButton.tint = 0x566573;
+          }else{
+            readyForWaveButton.tint = 0xffffff;
+          }
           /*
           * Generate Enemy
           */
@@ -237,7 +247,9 @@
 
           //Cash
 
-           bmpText.setText("Cash:" + cash);
+          bmpText.setText("Cash:" + cash);
+
+          nextWaveText.setText(nextWaveTimer);
 
            healthText.setText("Health:" + playerHealth);
 
@@ -281,10 +293,19 @@
                 }
 
               });
-              if((enemys.length <= 0) && (nextWaveActive === false)) {
+              if((enemys.length <= 0) && (nextWaveActive === false) && (nextWaveTimer <= 0)) {
+                waveActive = false
                 console.log('ran')
                 nextWaveActive = true;
-                nextWave()
+                nextWave();
+                nextWaveTimer = 15;
+                var nextWaveTimerActive = setInterval(function() {
+                  if(nextWaveTimer <= 0) {
+                    clearTimeout(nextWaveTimerActive);
+                  } else {
+                    nextWaveTimer -= 1;
+                  }
+                },1000)
               }
               if((enemys.length > 1) && nextWaveActive === true) {
                 nextWaveActive = false;
@@ -325,12 +346,27 @@
         }
 
         function nextWave() {
+
           currentWave += 1;
-          setTimeout(function() {
+          waveTimer = setTimeout(function() {
             generateEnemy(currentWave);
           },15000)
         }
+
+        function readyForWave() {
+          if(waveActive === false) {
+            clearTimeout(waveTimer);
+            generateEnemy(currentWave);
+            nextWaveTimer = 0;
+          }
+          // if(waveActive === false) {
+          //   currentWave += 1;
+          //   waveActive = true;
+          //   generateEnemy(currentWave);
+          // }
+        }
         function generateEnemy(wave) {
+          waveActive = true;
           var i = 0;
           var enemysBcl = setInterval(function() {
             if(i < (wave * 2)) {
