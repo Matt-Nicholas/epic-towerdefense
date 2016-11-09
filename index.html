@@ -31,7 +31,7 @@
     messagingSenderId: "509983097590"
   });
 
-  var game = new Phaser.Game(992, 640, Phaser.AUTO, 'gameContainer', {preload: preload, create: create, update: update, render: render});
+  var game = new Phaser.Game(992, 750, Phaser.AUTO, 'gameContainer', {preload: preload, create: create, update: update, render: render});
   var tileSquare = 32;
   var playerHealth = 20;
   var map, layer;
@@ -141,17 +141,22 @@
     towers = game.add.group();
     game.physics.enable(towers, Phaser.Physics.ARCADE);
 
+    //Tower Range
+    graphics = game.add.graphics(0, 0);
+    graphics.beginFill(0xFFFF0B, 0.5);
+    circle = graphics.drawCircle(0,0,100);
+    graphics.endFill();
     /*
     * Info Panel
     */
-    bmpText = game.add.bitmapText(800, 500, 'desyrel', 'Cash:', 24);
-    nextWaveText = game.add.bitmapText(890, 606, 'desyrel',"" ,24);
-    healthText = game.add.bitmapText(800, 550, 'desyrel', 'Health:', 24);
+    bmpText = game.add.bitmapText(200, 650, 'desyrel', 'Cash:', 24);
+    nextWaveText = game.add.bitmapText(770, 645, 'desyrel',"" ,24);
+    healthText = game.add.bitmapText(500, 650, 'desyrel', 'Health:', 24);
     towerStatsText = game.add.bitmapText(800, 300, 'desyrel', 'Tower:', 24);
     attackText = game.add.bitmapText(800, 350, 'desyrel', 'Attack:', 24);
     speedText = game.add.bitmapText(800, 400, 'desyrel', 'Speed:', 24);
     //highScoreText = game.add.bitmapText(500, 400, 'desyrel', 'HighScore:', 24);
-    scoreText = game.add.bitmapText(800, 450, 'desyrel', 'Score:', 24);
+    scoreText = game.add.bitmapText(50, 650, 'desyrel', 'Score:', 24);
     //highScoreText = game.add.bitmapText(200, 200, 'desyrel', "high scores", 24);
     levelText = game.add.bitmapText(800, 250, 'desyrel', 'Level:', 24);
 
@@ -161,7 +166,7 @@
     button3 = game.add.button(810, 140, 'button3', frostTowerClick);
     button4 = game.add.button(870, 10, 'button4', flameTowerClick);
     button5 = game.add.button(870, 81, 'button5', plasmaTowerClick);
-    readyForWaveButton = game.add.button(800, 560, 'startButton', readyForWave);
+    readyForWaveButton = game.add.button(680, 600, 'startButton', readyForWave);
     increment = game.add.button(900, 250, 'plusSign', upgradeTower);
 
 
@@ -331,6 +336,9 @@
       if(tower.input.pointerDown()){
         tower.aplha = 0.5;
 
+        circle.x = tower.x + 15;
+        circle.y = tower.y + 15;
+        circle.scale.setTo((tower.radius * 0.01), (tower.radius * 0.01));
         clickedTower = tower;
         towerSelected = tower.type;
         levelStat = tower.level;
@@ -433,7 +441,6 @@
   }
 
   function nextWave() {
-    uploadScore();
 
     currentWave += 1;
     waveTimer = setTimeout(function() {
@@ -528,11 +535,11 @@
 
       topTen = findTopTen(scoresArray);
 
-      for (var i = 0; i < topTen; i++) {
+      topTen = findTopTen(scoresArray);
 
+      for (var i = 0; i < 11; i++) {
+        highScores = highScores + "\n" + topTen[i];
       }
-
-      highScores = "\n" + topTen[0] + "\n" + topTen[1] + "\n" + topTen[2];
 
       highScoreText.setText("High Scores:" + highScores);
     })
