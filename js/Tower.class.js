@@ -19,7 +19,7 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         this.tower.animations.add("levelTwo", [6,7,8,9,10,11], 5, true);
         this.tower.animations.add("levelThree", [13,14,15,16,17,18], 5, true);
         this.tower.fireTime = 1125;
-        this.tower.radius = 100;
+        this.tower.radius = 90;
         this.tower.level = 1;
         this.tower.type = "cannonTower";
         cash -= this.tower.towerCost;
@@ -35,7 +35,7 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         this.tower.animations.play('levelOne');
         this.tower.towerCost = 150;
         this.tower.fireTime = 10;
-        this.tower.radius = 100;
+        this.tower.radius = 80;
         this.tower.level = 1;
         this.tower.type = "frostTower";
         cash -= this.tower.towerCost;
@@ -49,7 +49,7 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         this.tower.animations.add("levelThree", [4,5,6,7], 10, true);
         this.tower.animations.play('levelOne');
         this.tower.fireTime = 10;
-        this.tower.radius = 200;
+        this.tower.radius = 100;
         cash -= this.tower.towerCost;
         this.tower.level = 1;
         this.tower.type = "plasmaTower";
@@ -64,7 +64,7 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         this.tower.animations.play("levelOne")
         this.tower.animations
         this.tower.fireTime = 100;
-        this.tower.radius = 200;
+        this.tower.radius = 90;
         cash -= this.tower.towerCost;
         this.tower.level = 1;
         this.tower.type = "flameTower";
@@ -77,7 +77,7 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         this.tower.animations.add("levelTwo", [1], 10, true);
         this.tower.animations.add("levelThree", [2], 10, true);
         this.tower.fireTime = 275;
-        this.tower.radius = 130;
+        this.tower.radius = 110;
         cash -= this.tower.towerCost;
         this.tower.level = 1;
         this.tower.type = "archerTower";
@@ -95,27 +95,27 @@ Tower.prototype.add = function(pointer) {
     if(towerSelected == 'plasmaTower'){
       if(cash >= 500) {
         Tower.prototype.posit(pointer)
-        canAddTower = false;
+        // canAddTower = false;
       }
     } else if(towerSelected == 'cannonTower'){
       if(cash >= 75) {
         Tower.prototype.posit(pointer)
-        canAddTower = false;
+        // canAddTower = false;
       }
     } else if(towerSelected == 'frostTower'){
       if(cash >= 150) {
         Tower.prototype.posit(pointer)
-        canAddTower = false;
+        // canAddTower = false;
       }
     } else if(towerSelected == 'flameTower'){
       if(cash >= 300) {
         Tower.prototype.posit(pointer)
-        canAddTower = false;
+        // canAddTower = false;
       }
     } else if(towerSelected == 'archerTower'){
       if(cash >= 50) {
         Tower.prototype.posit(pointer)
-        canAddTower = false;
+        // canAddTower = false;
       }
     }
     }
