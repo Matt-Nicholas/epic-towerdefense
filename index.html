@@ -112,7 +112,7 @@
     /*
     * Tower Preload
     */
-    game.load.spritesheet('plasmaTower', 'assets/sprites/plasmaTowers.png',32,32,3);
+    game.load.spritesheet('plasmaTower', 'assets/sprites/plasmaTowers.png',32,32,8);
     game.load.spritesheet('cannonTower', 'assets/sprites/cannonTowers.png',32,32,20);
     game.load.spritesheet('frostTower', 'assets/sprites/iceTower.png',32,32,6);
     game.load.spritesheet('archerTower', 'assets/sprites/archerTowers.png',32,32,4);
@@ -145,7 +145,7 @@
     game.load.image('button3', 'assets/images/iceButton.png');
 
 
-    game.load.spritesheet('button5', 'assets/sprites/plasmaTowers.png', 32,32,1);
+    game.load.spritesheet('button5', 'assets/sprites/plasmaTowerButton.png', 64,64,1);
     game.load.image('button4', 'assets/images/barad-dur-button.png');
     game.load.image('button2', 'assets/sprites/atButton.png');
     game.load.image('button', 'assets/sprites/cannonTowerButton.png');
@@ -222,7 +222,7 @@
     button2 = game.add.button(880, 32, 'button2', archerTowerClick);
     button3 = game.add.button(880, 128, 'button3', frostTowerClick);
     button4 = game.add.button(810, 128, 'button4', flameTowerClick);
-    button5 = game.add.button(810, 256, 'button5', plasmaTowerClick);
+    button5 = game.add.button(810, 224, 'button5', plasmaTowerClick);
     readyForWaveButton = game.add.button(680, 600, 'startButton', readyForWave);
     increment = game.add.button(735, 450, 'upgrade', upgradeTower);
 
