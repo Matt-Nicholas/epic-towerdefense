@@ -69,6 +69,8 @@
   var clickedTower;
   var barConfig = {x: 200, y: 100};
   var enemysAnimation = [{'name': 'blackCat','length': 12},{'name': 'rat','length': 12},{'name': 'brownDog','length': 12}];
+  // var enemysAnimation = [{'name': 'brownDog','length': 12}];
+  // var enemysAnimation = [{'name': 'blackCat','length': 12}];
   var towerSelected = "None";
 
   //Sounds
@@ -81,7 +83,6 @@
   var flameSound;
 
   iceWind.volume = 0.2;
-
 
   var frostText;
   var fireText;
@@ -544,14 +545,14 @@
     //   generateEnemy(currentWave);
     // }
   }
-  var base = 3;
+  var base = 4;
   function generateEnemy(wave) {
     waveActive = true;
     var i = 0;
     if((wave % 10) === 0) {
-      base = base * 2;
+      base = base * 2.5;
       var enemysBcl = setInterval(function() {
-        if(i < (Math.round(base*(1+wave/10)))) {
+        if(i < (Math.round(base*(1+wave/5)))) {
           new Enemy(path[0].x * tileSquare, path[0].y * tileSquare, "chain", wave);
         } else {
           nextWaveActive = false;
@@ -561,7 +562,7 @@
       }, 1000);
     } else {
       var enemysBcl = setInterval(function() {
-        if(i < (Math.round(base*(1+wave/10)))) {
+        if(i < (Math.round(base*(1+wave/5)))) {
           var animEnemy = enemysAnimation[parseInt(Math.random() * enemysAnimation.length)];
           new Enemy(path[0].x * tileSquare, path[0].y * tileSquare, animEnemy.name, wave);
         } else {

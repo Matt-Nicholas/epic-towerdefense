@@ -18,13 +18,13 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         this.tower.animations.add("levelOne", [0,1,2,3,4], 5, true);
         this.tower.animations.add("levelTwo", [6,7,8,9,10,11], 5, true);
         this.tower.animations.add("levelThree", [13,14,15,16,17,18], 5, true);
-        this.tower.fireTime = 500;
+        this.tower.fireTime = 1125;
         this.tower.radius = 100;
         this.tower.level = 1;
         this.tower.type = "cannonTower";
         cash -= this.tower.towerCost;
         this.tower.ammunition = "cannon";
-        this.tower.bulletDamage = 3;
+        this.tower.bulletDamage = 6;
         towers.add(this.tower);
         this.tower.animations.play("levelOne");
       }
@@ -68,20 +68,20 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         this.tower.level = 1;
         this.tower.type = "flameTower";
         this.tower.ammunition = "flame";
-        this.tower.bulletDamage = .005;
+        this.tower.bulletDamage = .05;
         towers.add(this.tower);
       } else if(towerSelected === 'archerTower'){
         this.tower.towerCost = 50;
         this.tower.animations.add("levelOne", [0], 10, true);
         this.tower.animations.add("levelTwo", [1], 10, true);
         this.tower.animations.add("levelThree", [2], 10, true);
-        this.tower.fireTime = 500;
-        this.tower.radius = 200;
+        this.tower.fireTime = 275;
+        this.tower.radius = 130;
         cash -= this.tower.towerCost;
         this.tower.level = 1;
         this.tower.type = "archerTower";
         this.tower.ammunition = "arrow";
-        this.tower.bulletDamage = .75;
+        this.tower.bulletDamage = 0.85;
         towers.add(this.tower);
       }
       this.tower.killZone = [];
@@ -119,7 +119,7 @@ Tower.prototype.add = function(pointer) {
     }
     }
   }
-}
+
 
 Tower.prototype.levelTwo = function(tower) {
   console.log(tower);
@@ -151,8 +151,8 @@ Tower.prototype.upgradeTower = function(clickedTower) {
     if(cash > ((clickedTower.towerCost)*(Math.pow(3,clickedTower.level)))){
       cash -= ((clickedTower.towerCost)*(Math.pow(3,clickedTower.level)));
       clickedTower.level += 1;
-      clickedTower.fireTime = clickedTower.fireTime * 0.75;
-      clickedTower.bulletDamage = clickedTower.bulletDamage * 1.25;
+      clickedTower.fireTime = clickedTower.fireTime * 1.25;
+      clickedTower.bulletDamage = clickedTower.bulletDamage * 3;
       speedStat = Math.floor( (1 / clickedTower.fireTime) * 10000);
       attackStat = Math.round( (clickedTower.bulletDamage * speedStat) );
 
