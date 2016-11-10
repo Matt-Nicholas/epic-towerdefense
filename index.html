@@ -10,6 +10,9 @@
     <script type="text/javascript" src="js/Enemy.class.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.6.0/firebase.js"></script>
     <style>
+    body{
+      background-color: black;
+    }
     *{
       margin : 0;
     }
@@ -296,7 +299,7 @@
   }
 
   function cannonTowerClick() {
-
+    clickedTower = undefined;
     canAddTower = true;
     towerSelected = "cannonTower";
     towerName = "Cannon";
@@ -306,7 +309,7 @@
     levelStat = 1;
   }
   function plasmaTowerClick() {
-
+    clickedTower = undefined;
     canAddTower = true;
     towerSelected = "plasmaTower";
     towerName = "Plasma";
@@ -314,9 +317,10 @@
     attackStat = 2;
     speedStat = 10;
     levelStat = 1;
+
   }
   function archerTowerClick() {
-
+    clickedTower = undefined;
     canAddTower = true;
     towerSelected = "archerTower";
     towerName = "Archer";
@@ -326,7 +330,7 @@
     levelStat = 1;
   }
   function frostTowerClick() {
-
+    clickedTower = undefined;
     canAddTower = true;
     towerSelected = "frostTower";
     towerName = "Frost";
@@ -336,7 +340,7 @@
     levelStat = 1;
   }
   function flameTowerClick() {
-
+    clickedTower = undefined;
     canAddTower = true;
     towerSelected = "flameTower";
     towerName = "Flame";
@@ -404,7 +408,7 @@
     levelText.setText("Level:" + levelStat);
 
     scoreText.setText("Score:" + score);
-
+    console.log((towerCost));
     towerCostText.setText("Cost:" + towerCost);
 
     currentWaveText.setText("Wave:" + currentWave);
