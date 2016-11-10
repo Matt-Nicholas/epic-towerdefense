@@ -69,7 +69,7 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         this.tower.level = 1;
         this.tower.type = "flameTower";
         this.tower.ammunition = "flame";
-        this.tower.bulletDamage = .05;
+        this.tower.bulletDamage = .02;
         towers.add(this.tower);
       } else if(towerSelected === 'archerTower'){
         this.tower.towerCost = 50;

@@ -8,7 +8,7 @@ var Enemy = function(x, y, anim, wave) {
     this.enemy.animations.add('walk-up',[1,16,31], 8, true);
     this.enemy.animations.add('walk-down',[0,15,30,0,15,30,0,15,30,26], 8, true);
     this.enemy.anchor.setTo(0.5, 0.5)
-    this.enemy.speed = 1.1;
+    this.enemy.speed = (1.1 * (1 + wave/20));
     this.enemy.health = ((base + 15)*(wave/5));
     this.enemy.speedX = 0;
     this.enemy.speedY = 0;
@@ -21,9 +21,9 @@ var Enemy = function(x, y, anim, wave) {
     this.enemy.animations.add('walk-down',[0,1,2], 10, true);
     this.enemy.animations.add('walk-up',[9,10,11], 10, true);
     this.enemy.anchor.setTo(0.5, 0.5)
-    if(anim === "rat"){this.enemy.speed = 1.1;this.enemy.health = (base + 3) * (1 + (wave)/3);}
-    if(anim === "blackCat"){this.enemy.speed = 1;this.enemy.health = (base + 7) * (1 + (wave)/3);}
-    if(anim === "brownDog"){this.enemy.speed = 0.8;this.enemy.health = (base + 9) * (1 + (wave)/3);}
+    if(anim === "rat"){this.enemy.speed = (1.1 * (1 + wave/20));this.enemy.health = (base + 3) * (1 + (wave)/3);}
+    if(anim === "blackCat"){this.enemy.speed = (1 * (1 + wave/20));this.enemy.health = (base + 7) * (1 + (wave)/3);}
+    if(anim === "brownDog"){this.enemy.speed = (0.8 * (1 + wave/20));this.enemy.health = (base + 9) * (1 + (wave)/3);}
     this.enemy.speedX = 0;
     this.enemy.speedY = 0;
     this.enemy.curTile = 0;
