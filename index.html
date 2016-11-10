@@ -70,11 +70,15 @@
   var towerSelected = "None";
 
   //Sounds
-  var catDie = new Audio('assets/sounds/catDie.mp3');
+
   var iceWind = new Audio('assets/sounds/stormWind.wav');
-  var cannonShotSound = new Audio('assets/sounds/cannonSound.wav');
+
+  var catDie;
+  var cannonSound;
   var archerShotSound;
-  iceWind.volume = 0.4;
+  var flameSound;
+
+  iceWind.volume = 0.2;
 
 
   var frostText;
@@ -90,6 +94,9 @@
     //sounds
 
     game.load.audio('archerShotSound', 'assets/sounds/archerShotSound.mp3');
+    game.load.audio('cannonShotSound', 'assets/sounds/cannonSound.wav');
+    game.load.audio('catDie', 'assets/sounds/catDie.mp3');
+    game.load.audio('flameSound', 'assets/sounds/flameSound.mp3');
 
     game.load.bitmapFont('desyrel', 'assets/fonts/bitmapFonts/gem.png', 'assets/fonts/bitmapFonts/gem.xml');
     game.load.image('tiles', 'assets/maps/map_tiles.png');
@@ -144,6 +151,12 @@
 
   function create() {
     archerShotSound = game.add.audio('archerShotSound');
+    cannonSound = game.add.audio('cannonShotSound');
+    catDie = game.add.audio('catDie');
+    flameSound = game.add.audio('flameSound');
+
+    cannonSound.volume -= 0.75;
+    flameSound.volume -= 0.75;
     /**
     * Init map
     */

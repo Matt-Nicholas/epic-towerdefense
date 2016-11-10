@@ -13,7 +13,6 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
       this.tower.tile = tile;
       tileForbiden.push(index);
 
-
       if(towerSelected === "cannonTower") {
         this.tower.animations.add("levelOne", [0,1,2,3,4], 5, true);
         this.tower.animations.add("levelTwo", [6,7,8,9,10,11], 5, true);
@@ -159,7 +158,7 @@ Tower.prototype.fire = function(tower, enemy) {
       if(tower.type === "cannonTower") {
        bullet = cannons.getFirstExists(false);
        bullet.lifespan = tower.radius * 2;
-       cannonShotSound.play();
+       cannonSound.play();
      } else if(tower.type === "plasmaTower"){
         bullet = plasmas.getFirstExists(false);
         bullet.lifespan = tower.radius * 2;
@@ -170,6 +169,7 @@ Tower.prototype.fire = function(tower, enemy) {
       } else if(tower.type === "flameTower") {
         bullet = flames.getFirstExists(false);
         bullet.lifespan = tower.radius * 6;
+        flameSound.play();
       } else if(tower.type === "archerTower") {
         bullet = arrows.getFirstExists(false);
         bullet.lifespan = tower.radius * 2;
