@@ -93,23 +93,30 @@ Tower.prototype.add = function(pointer) {
   if(canAddTower) {
     if(towerSelected == 'plasmaTower'){
       if(cash >= 500) {
-
+        Tower.prototype.posit(pointer)
+        canAddTower = false;
+      }
+    } else if(towerSelected == 'cannonTower'){
+      if(cash >= 75) {
+        Tower.prototype.posit(pointer)
+        canAddTower = false;
+      }
+    } else if(towerSelected == 'frostTower'){
+      if(cash >= 150) {
+        Tower.prototype.posit(pointer)
+        canAddTower = false;
+      }
+    } else if(towerSelected == 'flameTower'){
+      if(cash >= 300) {
+        Tower.prototype.posit(pointer)
+        canAddTower = false;
+      }
+    } else if(towerSelected == 'archerTower'){
+      if(cash >= 50) {
+        Tower.prototype.posit(pointer)
+        canAddTower = false;
       }
     }
-    else if(towerSelected == 'cannonTower'){
-      towerCash = (clickedTower.towerCost);
-    }
-    else if(towerSelected == 'frostTower'){
-      towerCash = (clickedTower.towerCost);
-    }
-    else if(towerSelected == 'flameTower'){
-      towerCash = (clickedTower.towerCost);
-    }
-    else if(towerSelected == 'archerTower'){
-      towerCash = (clickedTower.towerCost);
-    }
-      Tower.prototype.posit(pointer)
-      canAddTower = false;
     }
   }
 }
