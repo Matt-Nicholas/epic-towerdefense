@@ -93,7 +93,9 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
 Tower.prototype.add = function(pointer) {
   if(canAddTower) {
     if(towerSelected == 'plasmaTower'){
-      towerCash = (clickedTower.towerCost);
+      if(cash >= 500) {
+
+      }
     }
     else if(towerSelected == 'cannonTower'){
       towerCash = (clickedTower.towerCost);
