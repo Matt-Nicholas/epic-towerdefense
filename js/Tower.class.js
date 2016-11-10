@@ -15,6 +15,7 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
 
 
       if(towerSelected === "cannonTower") {
+        this.tower.towerCost = 75;
         this.tower.animations.add("levelOne", [0,1,2,3,4], 5, true);
         this.tower.animations.add("levelTwo", [6,7,8,9,10,11], 5, true);
         this.tower.animations.add("levelThree", [13,14,15,16,17,18], 5, true);
@@ -22,34 +23,41 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         this.tower.radius = 100;
         this.tower.level = 1;
         this.tower.type = "cannonTower";
-        cash -= 50;
+        cash -= this.tower.towerCost;
         this.tower.ammunition = "cannon";
         this.tower.bulletDamage = 1;
         towers.add(this.tower);
         this.tower.animations.play("levelOne");
       }
       else if(towerSelected === 'frostTower') {
+        this.tower.animations.add("levelOne", [0,1], 5, true);
+        this.tower.animations.add("levelTwo", [2,3], 5, true);
+        this.tower.animations.add("levelThree", [4,5], 5, true);
+        this.tower.animations.play('levelOne');
+        this.tower.towerCost = 150;
         this.tower.fireTime = 10;
         this.tower.radius = 100;
         this.tower.level = 1;
         this.tower.type = "frostTower";
-        cash -= 150;
+        cash -= this.tower.towerCost;
         this.tower.ammunition = "frost";
         this.tower.bulletDamage = 0;
         towers.add(this.tower);
       } else if(towerSelected === 'plasmaTower'){
+        this.tower.towerCost = 500;
         this.tower.animations.add("levelOne", [0], 10, true);
         this.tower.animations.add("levelTwo", [1], 10, true);
         this.tower.animations.add("levelThree", [2], 10, true);
         this.tower.fireTime = 10;
         this.tower.radius = 200;
-        cash -= 25;
+        cash -= this.tower.towerCost;
         this.tower.level = 1;
         this.tower.type = "plasmaTower";
         this.tower.ammunition = "plasma";
         this.tower.bulletDamage = .02;
         towers.add(this.tower);
       } else if(towerSelected === 'flameTower'){
+        this.tower.towerCost = 300;
         this.tower.animations.add("levelOne", [0,1,2], 10, true);
         this.tower.animations.add("levelTwo", [3,4,5], 10, true);
         this.tower.animations.add("levelThree", [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21], 10, true);
@@ -57,19 +65,20 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         this.tower.animations
         this.tower.fireTime = 100;
         this.tower.radius = 200;
-        cash -= 25;
+        cash -= this.tower.towerCost;
         this.tower.level = 1;
         this.tower.type = "flameTower";
         this.tower.ammunition = "flame";
         this.tower.bulletDamage = .005;
         towers.add(this.tower);
       } else if(towerSelected === 'archerTower'){
+        this.tower.towerCost = 50;
         this.tower.animations.add("levelOne", [0], 10, true);
         this.tower.animations.add("levelTwo", [1], 10, true);
         this.tower.animations.add("levelThree", [2], 10, true);
         this.tower.fireTime = 500;
         this.tower.radius = 200;
-        cash -= 25;
+        cash -= this.tower.towerCost;
         this.tower.level = 1;
         this.tower.type = "archerTower";
         this.tower.ammunition = "arrow";
@@ -101,23 +110,23 @@ Tower.prototype.levelThree = function(tower) {
 
 Tower.prototype.upgradeTower = function(clickedTower) {
   console.log(clickedTower)
-  if(towerSelected == 'plasmaTower'){
-    towerCash = 100;
-  }
-  else if(towerSelected == 'cannonTower'){
-    towerCash = 150;
-  }
-  else if(towerSelected == 'frostTower'){
-    towerCash = 200;
-  }
-  else if(towerSelected == 'flameTower'){
-    towerCash = 200;
-  }
-  else if(towerSelected == 'archerTower'){
-    towerCash = 200;
-  }
-    if(cash > towerCash && clickedTower.level == 1){
-      cash -= towerCash;
+  // if(towerSelected == 'plasmaTower'){
+  //   towerCash = (clickedTower.towerCost);
+  // }
+  // else if(towerSelected == 'cannonTower'){
+  //   towerCash = (clickedTower.towerCost);
+  // }
+  // else if(towerSelected == 'frostTower'){
+  //   towerCash = (clickedTower.towerCost);
+  // }
+  // else if(towerSelected == 'flameTower'){
+  //   towerCash = (clickedTower.towerCost);
+  // }
+  // else if(towerSelected == 'archerTower'){
+  //   towerCash = (clickedTower.towerCost);
+  // }
+    if(cash > ((clickedTower.towerCost)*(Math.pow(3,clickedTower.level)))){
+      cash -= ((clickedTower.towerCost)*(Math.pow(3,clickedTower.level)));
       clickedTower.level += 1;
       clickedTower.fireTime = clickedTower.fireTime * 0.75;
       clickedTower.bulletDamage = clickedTower.bulletDamage * 1.25;
@@ -125,19 +134,23 @@ Tower.prototype.upgradeTower = function(clickedTower) {
       attackStat = Math.round( (clickedTower.bulletDamage * speedStat) );
 
       levelStat = clickedTower.level;
-      Tower.prototype.levelTwo(clickedTower);
+      if(clickedTower.level === 2) {
+        Tower.prototype.levelTwo(clickedTower);
+      } else {
+        Tower.prototype.levelThree(clickedTower);
+      }
     }
-    else if(cash > (towerCash*2) && clickedTower.level == 2){
-      cash -= (towerCash*2);
-      clickedTower.level += 1;
-      clickedTower.bulletDamage = clickedTower.bulletDamage * 1.25;
-      clickedTower.fireTime = clickedTower.fireTime * 0.75;
-
-      speedStat = Math.floor((1 / clickedTower.fireTime) * 10000);
-      attackStat = Math.round( (clickedTower.bulletDamage * speedStat) );
-      levelStat = clickedTower.level;
-      Tower.prototype.levelThree(clickedTower);
-    }
+    // else if(cash > (towerCash*2) && clickedTower.level == 2){
+    //   cash -= (towerCash*2);
+    //   clickedTower.level += 1;
+    //   clickedTower.bulletDamage = clickedTower.bulletDamage * 1.25;
+    //   clickedTower.fireTime = clickedTower.fireTime * 0.75;
+    //
+    //   speedStat = Math.floor((1 / clickedTower.fireTime) * 10000);
+    //   attackStat = Math.round( (clickedTower.bulletDamage * speedStat) );
+    //   levelStat = clickedTower.level;
+    //   Tower.prototype.levelThree(clickedTower);
+    // }
   }
 
 
