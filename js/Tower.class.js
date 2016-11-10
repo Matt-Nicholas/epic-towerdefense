@@ -44,9 +44,10 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         towers.add(this.tower);
       } else if(towerSelected === 'plasmaTower'){
         this.tower.towerCost = 500;
-        this.tower.animations.add("levelOne", [0], 10, true);
-        this.tower.animations.add("levelTwo", [1], 10, true);
-        this.tower.animations.add("levelThree", [2], 10, true);
+        this.tower.animations.add("levelOne", [0,1], 10, true);
+        this.tower.animations.add("levelTwo", [2,3], 10, true);
+        this.tower.animations.add("levelThree", [4,5,6,7], 10, true);
+        this.tower.animations.play('levelOne');
         this.tower.fireTime = 10;
         this.tower.radius = 200;
         cash -= this.tower.towerCost;
