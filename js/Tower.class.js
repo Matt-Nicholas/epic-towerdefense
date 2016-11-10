@@ -24,7 +24,7 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         this.tower.type = "cannonTower";
         cash -= this.tower.towerCost;
         this.tower.ammunition = "cannon";
-        this.tower.bulletDamage = 1;
+        this.tower.bulletDamage = 3;
         towers.add(this.tower);
         this.tower.animations.play("levelOne");
       }
@@ -81,7 +81,7 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
         this.tower.level = 1;
         this.tower.type = "archerTower";
         this.tower.ammunition = "arrow";
-        this.tower.bulletDamage = .02;
+        this.tower.bulletDamage = .75;
         towers.add(this.tower);
       }
       this.tower.killZone = [];
@@ -91,10 +91,27 @@ var Tower = function(worldX, worldY, tileX, tileY, tile) {
 
 Tower.prototype.add = function(pointer) {
   if(canAddTower) {
-    Tower.prototype.posit(pointer)
-    canAddTower = false;
-  }
+    if(towerSelected == 'plasmaTower'){
+      if(cash >= 500) {
 
+      }
+    }
+    else if(towerSelected == 'cannonTower'){
+      towerCash = (clickedTower.towerCost);
+    }
+    else if(towerSelected == 'frostTower'){
+      towerCash = (clickedTower.towerCost);
+    }
+    else if(towerSelected == 'flameTower'){
+      towerCash = (clickedTower.towerCost);
+    }
+    else if(towerSelected == 'archerTower'){
+      towerCash = (clickedTower.towerCost);
+    }
+      Tower.prototype.posit(pointer)
+      canAddTower = false;
+    }
+  }
 }
 
 Tower.prototype.levelTwo = function(tower) {
