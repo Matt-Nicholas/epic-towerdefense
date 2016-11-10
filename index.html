@@ -49,6 +49,7 @@
   var button3;
   var button4;
   var button5;
+  var test;
   var explosion;
   var attackStat = 0;
   var speedStat = 0;
@@ -62,6 +63,7 @@
   var levelText;
   var highScoreText;
   var towerCash;
+  var towerCost = 0;
   var highScores;
   var score = 0;
   var clickedTower;
@@ -88,7 +90,7 @@
     */
     game.load.spritesheet('plasmaTower', 'assets/sprites/plasmaTowers.png',32,32,3);
     game.load.spritesheet('cannonTower', 'assets/sprites/cannonTowers.png',32,32,20);
-    game.load.spritesheet('frostTower', 'assets/sprites/iceTower.png',32,32,1);
+    game.load.spritesheet('frostTower', 'assets/sprites/iceTower.png',32,32,6);
     game.load.spritesheet('archerTower', 'assets/sprites/archerTowers.png',32,32,4);
     game.load.spritesheet('flameTower', 'assets/sprites/barad-dur.png',32,32,22);
     // explosion
@@ -175,6 +177,7 @@
 
     // Tower Info
     towerStatsText = game.add.bitmapText(802, 315, 'desyrel', 'Tower:', 30);
+    towerCostText = game.add.bitmapText(810, 440, 'desyrel', 'Cost:', 24);
     attackText = game.add.bitmapText(810, 380, 'desyrel', 'DPS:', 24);
     speedText = game.add.bitmapText(810, 410, 'desyrel', 'Speed:', 24);
     //highScoreText = game.add.bitmapText(500, 400, 'desyrel', 'HighScore:', 24);
@@ -189,7 +192,7 @@
     button4 = game.add.button(810, 128, 'button4', flameTowerClick);
     button5 = game.add.button(810, 256, 'button5', plasmaTowerClick);
     readyForWaveButton = game.add.button(680, 600, 'startButton', readyForWave);
-    increment = game.add.button(735, 410, 'upgrade', upgradeTower);
+    increment = game.add.button(735, 450, 'upgrade', upgradeTower);
 
 
 
@@ -268,52 +271,64 @@
   }
 
   function cannonTowerClick() {
+
     canAddTower = true;
     towerSelected = "cannonTower";
     towerName = "Cannon";
+    towerCost = 75;
     attackStat = 1;
     speedStat = 20;
     levelStat = 1;
   }
   function plasmaTowerClick() {
+
     canAddTower = true;
     towerSelected = "plasmaTower";
     towerName = "Plasma";
-
+    towerCost = 500;
     attackStat = 2;
     speedStat = 10;
     levelStat = 1;
   }
   function archerTowerClick() {
+
     canAddTower = true;
     towerSelected = "archerTower";
     towerName = "Archer";
-
+    towerCost = 50;
     attackStat = 2;
     speedStat = 10;
     levelStat = 1;
   }
   function frostTowerClick() {
+
     canAddTower = true;
     towerSelected = "frostTower";
     towerName = "Frost";
-
+    towerCost = 150
     attackStat = 1;
     speedStat = 10;
     levelStat = 1;
   }
   function flameTowerClick() {
+
     canAddTower = true;
     towerSelected = "flameTower";
     towerName = "Flame";
-
+    towerCost = 300;
     attackStat = 1;
     speedStat = 10;
     levelStat = 1;
   }
-
   function upgradeTower() {
-    Tower.prototype.upgradeTower(clickedTower);
+    if((clickedTower.level < 3) && clickedTower !== undefined) {
+      Tower.prototype.upgradeTower(clickedTower);
+      if(clickedTower.level === 3) {
+        increment.tint = 0x566573;
+      }
+    } else {
+
+    }
   }
 
   function render() {
@@ -365,6 +380,8 @@
 
     scoreText.setText("Score:" + score);
 
+    towerCostText.setText("Cost:" + towerCost);
+
     currentWaveText.setText("Wave:" + currentWave);
 
     // select
@@ -379,6 +396,7 @@
           increment.visible = false;
         } else{
           increment.visible = true;
+          increment.tint = 0xffffff;
         }
         circle.x = tower.x + 15;
         circle.y = tower.y + 15;
@@ -400,6 +418,10 @@
           towerName = "Plasma";
         }
       }
+      if (clickedTower !== undefined) {
+        towerCost = ((clickedTower.towerCost)*(Math.pow(3,clickedTower.level)))
+      }
+
 
     });
     if((enemys.length <= 0) && (nextWaveActive === false) && (nextWaveTimer <= 0)) {
