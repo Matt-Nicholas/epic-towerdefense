@@ -105,9 +105,15 @@ Enemy.prototype.takeHit = function(enemy, bullet) {
   enemy.hpBar.width = enemy.health;
 
   if(enemy.health <= 0) {
-    cash += 8;
-    score += 5;
-    catDie.play();
+    if(enemy.key === 'chain'){
+      cash += 15;
+      score += 10;
+    }else{
+      cash += 10;
+      score += 5;
+    }
+
+    // catDie.play();
 
     enemy.destroy();
     Tower.prototype.popEnemy(enemy);

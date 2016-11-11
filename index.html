@@ -44,7 +44,7 @@
   var nextWaveActive = false;
   var currentWave = 0;
   var towers = [];
-  var canAddTower = true;
+  var canAddTower = false;
   var nextWaveTimer = 0;
   var waveTimer;
   var button;
@@ -57,7 +57,7 @@
   var attackStat = 0;
   var speedStat = 0;
   var levelStat = 0;
-  var cash = 100;
+  var cash = 250;
   var bmpText;
   var nextWaveText;
   var towerStatsText;
@@ -254,7 +254,7 @@
     plasmas.setAll('outOfBoundsKill', true);
     plasmas.setAll('checkWorldBounds', true);
 
-    cannons.createMultiple(30, 'cannon');
+    cannons.createMultiple(100, 'cannon');
     cannons.setAll('anchor.x', 0.5);
     cannons.setAll('anchor.y', 1);
     cannons.setAll('outOfBoundsKill', true);
@@ -409,7 +409,6 @@
     levelText.setText("Level:" + levelStat);
 
     scoreText.setText("Score:" + score);
-    console.log((towerCost));
     towerCostText.setText("Cost:" + towerCost);
 
     currentWaveText.setText("Wave:" + currentWave);
@@ -417,7 +416,6 @@
     highScoreText.setText("High Scores:" + highScores);
 
     // select
-    console.log(currentWave);
     towers.forEach(function(tower) {
       tower.inputEnabled = true;
 
@@ -483,18 +481,23 @@
       */
       if( towerSelected == "plasmaTower" && cash >= 25){
         Tower.prototype.add(pointer);
+        canAddTower = false;
       }
       else if( towerSelected == "cannonTower" && cash >= 50){
         Tower.prototype.add(pointer);
+        canAddTower = false;
       }
       else if( towerSelected == "frostTower" && cash >= 50){
         Tower.prototype.add(pointer);
+        canAddTower = false;
       }
       else if( towerSelected == "flameTower" && cash >= 50){
         Tower.prototype.add(pointer);
+        canAddTower = false;
       }
       else if( towerSelected == "archerTower" && cash >= 50){
         Tower.prototype.add(pointer);
+        canAddTower = false;
       }
     }
   }
